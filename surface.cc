@@ -3,3 +3,8 @@
 //
 
 #include "surface.h"
+
+std::ostream &operator<<(std::ostream &os, const Surface &surface) {
+    os << surface.to_string() << std::flush;
+    return os;
+}

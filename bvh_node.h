@@ -6,8 +6,62 @@
 #define RAYTRACER_BVH_NODE_H
 
 
-class BVHNode {
+#include <vector>
+#include <algorithm>
+#include <limits>
 
+#include "surface.h"
+
+class BVHNode : public Surface {
+public:
+    friend class Scene;
+
+    friend class Camera;
+
+private:
+    // create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers
+    static Surface *create_bvh_tree(const std::vector<Surface *>::const_iterator &begin,
+                                          const std::vector<Surface *>::const_iterator &end);
+
+    // helper function, compute volume
+    static float compute_volume(const std::vector<Surface *>::const_iterator &begin,
+                                const std::vector<Surface *>::const_iterator &end);
+
+    // helper function, determine cut position
+    static const std::vector<Surface *>::const_iterator determine_cut(const std::vector<Surface *>::const_iterator &begin,
+                                                                    const std::vector<Surface *>::const_iterator &end);
+
+    // intersect function, from parent node to all its leaves
+    static void intersect(Ray &ray, const BVHNode *const parent, const Surface *const surface, const Render &flag);
+
+    BVHNode(const std::vector<Surface *>::const_iterator &begin,
+            const std::vector<Surface *>::const_iterator &end);
+
+    bool intersect(Ray &, const Render &) const;
+
+    std::string to_string() const;
+
+    Surface *_left;
+    Surface *_right;
+};
+
+struct BBoxComparable {
+    enum class CompareFlag {
+        X, Y, Z
+    };
+    CompareFlag _flag;
+
+    BBoxComparable(const CompareFlag &f = CompareFlag::X) : _flag{f} { }
+
+    bool operator()(const Surface *l, const Surface *r) {
+        if (_flag == CompareFlag::X) {
+            return l->box().min().x() < r->box().min().x();
+        } else if (_flag == CompareFlag::Y) {
+            return l->box().min().y() < r->box().min().y();
+        } else {
+            return l->box().min().z() < r->box().min().z();
+        }
+    }
 };
 
 

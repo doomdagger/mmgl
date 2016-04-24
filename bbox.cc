@@ -4,7 +4,7 @@
 
 #include "bbox.h"
 
-std::pair<bool, float> BBox::intersect(Ray &ray, bool isNode) const {
+std::pair<bool, float> BBox::intersect(const Ray &ray, bool isNode) const {
     std::pair<bool, float> ret{false, .0f};
     const Vector &ray_dir = ray._dir;
     const Point &ray_orig = ray._origin;

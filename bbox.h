@@ -17,7 +17,7 @@
 
 class BBox {
 public:
-    std::pair<bool, float> intersect(Ray &ray, bool isNode) const;
+    std::pair<bool, float> intersect(const Ray &ray, bool isNode) const;
 
     Vector normal(const Point &inter_p) const;
 

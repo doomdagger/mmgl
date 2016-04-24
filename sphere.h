@@ -6,8 +6,46 @@
 #define RAYTRACER_SPHERE_H
 
 
-class Sphere {
+#include <iostream>
+#include <sstream>
 
+#include "surface.h"
+#include "point.h"
+
+class Sphere : public Surface {
+public:
+    Sphere(float x = 0, float y = 0, float z = 0, float r = 0);
+
+    Sphere(const Point &origin, float radius);
+
+    bool intersect(Ray &, const Render &) const;
+
+    std::string to_string() const;
+
+    inline const Point &origin() const {
+        return _origin;
+    }
+
+    inline float radius() const {
+        return _radius;
+    }
+
+private:
+    void init() {
+        float x_min, y_min, z_min, x_max, y_max, z_max;
+        x_min = _origin._x - _radius;
+        y_min = _origin._y - _radius;
+        z_min = _origin._z - _radius;
+
+        x_max = _origin._x + _radius;
+        y_max = _origin._y + _radius;
+        z_max = _origin._z + _radius;
+
+        box(x_min, y_min, z_min, x_max, y_max, z_max);
+    }
+
+    Point _origin;
+    float _radius;
 };
 
 

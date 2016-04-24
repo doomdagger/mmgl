@@ -311,39 +311,6 @@ AmbientLight &Scene::ambientLight(float r, float g, float b) {
     return *light;
 }
 
-Sphere &Scene::sphere(const Point &central, float radius, const Material &material) {
-    Sphere *surface = new Sphere(central, radius);
-    surface->material(material);
-    _surfaces.push_back(surface);
-    return *surface;
-}
-
-Triangle &Scene::triangle(const Point &p1, const Point &p2, const Point &p3, const Material &material) {
-    Triangle *surface = new Triangle(p1, p2, p3);
-    surface->material(material);
-    _surfaces.push_back(surface);
-    return *surface;
-}
-
-PointLight &Scene::pointLight(const Point &position, const Vector &rgb) {
-    PointLight *light = new PointLight(position, rgb);
-    _lights.push_back(light);
-    return *light;
-}
-
-AreaLight &Scene::areaLight(const Point &position, const Vector &normal, const Vector &u_vector, float len,
-                            const Vector &rgb) {
-    AreaLight *light = new AreaLight{position, normal, u_vector, len, rgb};
-    _lights.push_back(light);
-    return *light;
-}
-
-AmbientLight &Scene::ambientLight(const Vector &rgb) {
-    AmbientLight *light = new AmbientLight{rgb};
-    _lights.push_back(light);
-    return *light;
-}
-
 Scene::~Scene() {
     for (auto &elem : _surfaces) {
         delete elem;

@@ -38,32 +38,19 @@ public:
     Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = .0f,
                    const Material &material = Material{});
 
-    Sphere &sphere(const Point &central = Point{}, float radius = .0f,
-                   const Material &material = Material{});
-
     Triangle &triangle(float x1 = .0f, float y1 = .0f, float z1 = .0f,
                        float x2 = .0f, float y2 = .0f, float z2 = .0f,
                        float x3 = .0f, float y3 = .0f, float z3 = .0f,
                        const Material &material = Material{});
 
-    Triangle &triangle(const Point &p1 = Point{}, const Point &p2 = Point{}, const Point &p3 = Point{},
-                       const Material &material = Material{});
-
     PointLight &pointLight(float x = .0f, float y = .0f, float z = .0f,
                            float r = .0f, float g = .0f, float b = .0f);
-
-    PointLight &pointLight(const Point &position = Point{}, const Vector &rgb = Vector{});
 
     AreaLight &areaLight(float x = .0f, float y = .0f, float z = .0f, float nx = .0f, float ny = .0f, float nz = .0f,
                          float ux = .0f, float uy = .0f, float uz = .0f, float len = .0f, float r = .0f, float g = .0f,
                          float b = .0f);
 
-    AreaLight &areaLight(const Point &position = Point{}, const Vector &normal = Vector{},
-                         const Vector &u_vector = Vector{}, float len = .0f, const Vector &rgb = Vector{});
-
     AmbientLight &ambientLight(float r = .0f, float g = .0f, float b = .0f);
-
-    AmbientLight &ambientLight(const Vector &rgb = Vector{});
 
     ~Scene();
 

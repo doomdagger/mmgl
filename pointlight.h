@@ -15,7 +15,7 @@ public:
     PointLight(float x = 0, float y = 0, float z = 0,
                float r = 0, float g = 0, float b = 0) : Light{r, g, b}, _orig{x, y, z} { }
 
-    PointLight(const Point &point, float r = 0, float g = 0, float b = 0) : Light{r, g, b}, _orig{point} { }
+    PointLight(const Point &point, const Vector &rgb) : Light{rgb}, _orig{point} { }
 
 
     inline const Point &orig() const {

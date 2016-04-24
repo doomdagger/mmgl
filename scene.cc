@@ -225,108 +225,135 @@ void Scene::render() {
         return;
     }
 
-    std::vector<Surface *> objects_vec = surfaces();
-    std::vector<Light *> lights_vec = lights();
+    std::vector<Surface *> objects_vec;
+    std::vector<Light *> lights_vec;
 
-    std::cout << "Start to build BVH Tree..." << std::endl;
-    std::clock_t beg = clock();
-    // in case we only have one surface
+    std::copy(_surfaces.begin(), _surfaces.end(), std::back_inserter(objects_vec));
+    std::copy(_lights.begin(), _lights.end(), std::back_inserter(lights_vec));
+
+    // build bvh tree
     BVHNode *parent = nullptr;
-    // in case of we only have one object
-    if (!(parent = dynamic_cast<BVHNode *>(BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end())))) {
-        parent = new BVHNode(objects_vec.begin(), objects_vec.end());
-        parent->_left = objects_vec[0];
-    }
-    clock_t end = clock();
-    std::cout << "Finish building BVH Tree in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
+    if (config._render_flag == Render::BVH || config._render_flag == Render::BVH_BBOX_ONLY) {
+        std::cout << "Start to build BVH Tree..." << std::endl;
+        std::clock_t beg = clock();
 
+        // in case of we only have one object
+        if (!(parent = dynamic_cast<BVHNode *>(BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end())))) {
+            parent = new BVHNode(objects_vec.begin(), objects_vec.end());
+            parent->_left = objects_vec[0];
+        }
+
+        clock_t end = clock();
+        std::cout << "Finish building BVH Tree in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
+    }
+
+    // render
     std::cout << "Start to render..." << std::endl;
-    beg = clock();
+    std::clock_t beg = clock();
     _camera.render(objects_vec, lights_vec, parent, config);
-    end = clock();
+    std::clock_t end = clock();
     std::cout << "Finish rendering in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
 
     // clean up memory, using BFS
-    std::queue<Surface *> q;
+    std::queue<BVHNode *> q;
     q.push(parent);
     while (!q.empty()) {
-        Surface *temp = q.front();
+        BVHNode *node = q.front();
         q.pop();
-        if (BVHNode *node = dynamic_cast<BVHNode *>(temp)) {
-            if (node->_left) {
-                q.push(node->_left);
-            }
-            if (node->_right) {
-                q.push(node->_right);
-            }
-            // only delete bvh node
-            delete temp;
+
+        BVHNode *node_left = nullptr;
+        BVHNode *node_right = nullptr;
+
+        if (node->_left && (node_left = dynamic_cast<BVHNode *>(node->_left))) {
+            q.push(node_left);
         }
+        if (node->_right && (node_right = dynamic_cast<BVHNode *>(node->_right))) {
+            q.push(node_right);
+        }
+
+        delete node;
     }
 }
 
-unsigned long Scene::sphere(float x, float y, float z, float radius, const Material &material) {
-    Surface *surface = new Sphere(x, y, z, radius);
+Sphere &Scene::sphere(float x, float y, float z, float radius, const Material &material) {
+    Sphere *surface = new Sphere(x, y, z, radius);
     surface->material(material);
-    _surfaces[++_surface_id] = surface;
-    return _surface_id;
+    _surfaces.push_back(surface);
+    return *surface;
 }
 
-unsigned long Scene::triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
-                              float z3, const Material &material) {
-    Surface *surface = new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+Triangle &Scene::triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
+                          float z3, const Material &material) {
+    Triangle *surface = new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3);
     surface->material(material);
-    _surfaces[++_surface_id] = surface;
-    return _surface_id;
+    _surfaces.push_back(surface);
+    return *surface;
 }
 
-unsigned long Scene::pointLight(float x, float y, float z, float r, float g, float b) {
-    Light *light = new PointLight(x, y, z, r, g, b);
-    _lights[++_light_id] = light;
-    return _light_id;
+PointLight &Scene::pointLight(float x, float y, float z, float r, float g, float b) {
+    PointLight *light = new PointLight(x, y, z, r, g, b);
+    _lights.push_back(light);
+    return *light;
 }
 
-unsigned long Scene::areaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
-                               float len, float r, float g, float b) {
-    Light *light = new AreaLight{x, y, z, nx, ny, nz, ux, uy, uz, len, r, g, b};
-    _lights[++_light_id] = light;
-    return _light_id;
+AreaLight &Scene::areaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
+                            float len, float r, float g, float b) {
+    AreaLight *light = new AreaLight{x, y, z, nx, ny, nz, ux, uy, uz, len, r, g, b};
+    _lights.push_back(light);
+    return *light;
 }
 
-unsigned long Scene::ambientLight(float r, float g, float b) {
-    Light *light = new AmbientLight{r, g, b};
-    _lights[++_light_id] = light;
-    return _light_id;
+AmbientLight &Scene::ambientLight(float r, float g, float b) {
+    AmbientLight *light = new AmbientLight{r, g, b};
+    _lights.push_back(light);
+    return *light;
+}
+
+Sphere &Scene::sphere(const Point &central, float radius, const Material &material) {
+    Sphere *surface = new Sphere(central, radius);
+    surface->material(material);
+    _surfaces.push_back(surface);
+    return *surface;
+}
+
+Triangle &Scene::triangle(const Point &p1, const Point &p2, const Point &p3, const Material &material) {
+    Triangle *surface = new Triangle(p1, p2, p3);
+    surface->material(material);
+    _surfaces.push_back(surface);
+    return *surface;
+}
+
+PointLight &Scene::pointLight(const Point &position, const Vector &rgb) {
+    PointLight *light = new PointLight(position, rgb);
+    _lights.push_back(light);
+    return *light;
+}
+
+AreaLight &Scene::areaLight(const Point &position, const Vector &normal, const Vector &u_vector, float len,
+                            const Vector &rgb) {
+    AreaLight *light = new AreaLight{position, normal, u_vector, len, rgb};
+    _lights.push_back(light);
+    return *light;
+}
+
+AmbientLight &Scene::ambientLight(const Vector &rgb) {
+    AmbientLight *light = new AmbientLight{rgb};
+    _lights.push_back(light);
+    return *light;
 }
 
 Scene::~Scene() {
     for (auto &elem : _surfaces) {
-        delete elem.second;
+        delete elem;
     }
 
     for (auto &elem : _lights) {
-        delete elem.second;
+        delete elem;
     }
 }
 
-const std::vector<Surface *> Scene::surfaces() const {
-    std::vector<Surface *> ret;
-    for (auto &elem : _surfaces) {
-        ret.push_back(elem.second);
-    }
-    return std::move(ret);
-}
-
-const std::vector<Light *> Scene::lights() const {
-    std::vector<Light *> ret;
-    for (auto &elem : _lights) {
-        ret.push_back(elem.second);
-    }
-    return std::move(ret);
-}
-
-void Scene::configCamera(float x, float y, float z, float d, float dx, float dy, float dz, int nx, int ny, float iw,
-                         float ih) {
+void Scene::configCamera(float x, float y, float z, float dx, float dy, float dz, float d,
+                         float iw, float ih, int nx, int ny) {
     _camera.config(x, y, z, d, dx, dy, dz, nx, ny, iw, ih);
 }
 

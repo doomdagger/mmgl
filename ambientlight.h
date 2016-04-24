@@ -12,6 +12,8 @@
 class AmbientLight : public Light {
 public:
     AmbientLight(float r, float g, float b) : Light{r, g, b} { }
+
+    AmbientLight(const Vector &rgb) : Light{rgb} { }
 };
 
 

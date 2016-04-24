@@ -7,7 +7,6 @@
 #define RAYTRACER_SCENE_H
 
 #include <vector>
-#include <map>
 #include <queue>
 
 #include "common.h"
@@ -25,55 +24,54 @@ public:
 
     Scene(const std::string &scene_file);
 
-    const std::vector<Surface *> surfaces() const;
-
-    const std::vector<Light *> lights() const;
-
     inline const Camera &camera() const {
         return _camera;
     }
 
-    inline Surface *surface(unsigned long id) {
-        return _surfaces[id];
-    }
-
-    inline Light *light(unsigned long id) {
-        return _lights[id];
-    }
-
-    void configCamera(float x, float y, float z, float d, float dx, float dy, float dz,
-                      int nx, int ny, float iw, float ih);
+    void configCamera(float x, float y, float z, float dx, float dy, float dz, float d,
+                      float iw, float ih, int nx, int ny);
 
     void render();
 
     void save(const std::string &file_path) const;
 
-    unsigned long sphere(float x, float y, float z, float radius, const Material &material = Material{});
+    Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = .0f,
+                   const Material &material = Material{});
 
-    unsigned long triangle(float x1, float y1, float z1,
-                           float x2, float y2, float z2,
-                           float x3, float y3, float z3, const Material &material = Material{});
+    Sphere &sphere(const Point &central = Point{}, float radius = .0f,
+                   const Material &material = Material{});
 
-    unsigned long pointLight(float x, float y, float z,
-                             float r, float g, float b);
+    Triangle &triangle(float x1 = .0f, float y1 = .0f, float z1 = .0f,
+                       float x2 = .0f, float y2 = .0f, float z2 = .0f,
+                       float x3 = .0f, float y3 = .0f, float z3 = .0f,
+                       const Material &material = Material{});
 
-    unsigned long areaLight(float x, float y, float z, float nx, float ny, float nz,
-                            float ux, float uy, float uz, float len, float r, float g, float b);
+    Triangle &triangle(const Point &p1 = Point{}, const Point &p2 = Point{}, const Point &p3 = Point{},
+                       const Material &material = Material{});
 
-    unsigned long ambientLight(float r, float g, float b);
+    PointLight &pointLight(float x = .0f, float y = .0f, float z = .0f,
+                           float r = .0f, float g = .0f, float b = .0f);
 
+    PointLight &pointLight(const Point &position = Point{}, const Vector &rgb = Vector{});
 
+    AreaLight &areaLight(float x = .0f, float y = .0f, float z = .0f, float nx = .0f, float ny = .0f, float nz = .0f,
+                         float ux = .0f, float uy = .0f, float uz = .0f, float len = .0f, float r = .0f, float g = .0f,
+                         float b = .0f);
+
+    AreaLight &areaLight(const Point &position = Point{}, const Vector &normal = Vector{},
+                         const Vector &u_vector = Vector{}, float len = .0f, const Vector &rgb = Vector{});
+
+    AmbientLight &ambientLight(float r = .0f, float g = .0f, float b = .0f);
+
+    AmbientLight &ambientLight(const Vector &rgb = Vector{});
 
     ~Scene();
 
     // public member field config for easy access
     SceneConfig config;
 private:
-    std::map<unsigned long, Surface *> _surfaces;
-    std::map<unsigned long, Light *> _lights;
-
-    unsigned long _surface_id = 0;
-    unsigned long _light_id = 0;
+    std::vector<Surface *> _surfaces;
+    std::vector<Light *> _lights;
 
     Camera _camera;
 };

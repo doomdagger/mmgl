@@ -16,10 +16,12 @@ public:
     AreaLight(float x, float y, float z, float nx, float ny, float nz,
               float ux, float uy, float uz, float len, float r, float g, float b)
             : Light(r, g, b), _orig(x, y, z), _norm(nx, ny, nz), _u(ux, uy, uz), _len(len) {
-        _norm.normalize();
-        _u.normalize();
-        _v = _u.cross(_norm);
-        _v.normalize();
+        init();
+    }
+
+    AreaLight(const Point &position, const Vector &normal, const Vector &u_vector, float len,
+              const Vector &rgb) : Light(rgb), _orig(position), _norm(normal), _u(u_vector), _len(len) {
+        init();
     }
 
     std::vector<Point> sample(int sampling_num);
@@ -45,6 +47,13 @@ public:
     }
 
 private:
+    void init() {
+        _norm.normalize();
+        _u.normalize();
+        _v = _u.cross(_norm);
+        _v.normalize();
+    }
+
     Point _orig;
     Vector _norm;
     Vector _u;

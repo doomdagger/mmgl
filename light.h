@@ -13,6 +13,8 @@ class Light {
 public:
     Light(float r = 0, float g = 0, float b = 0) : _color{r, g, b} { }
 
+    Light(const Vector &rgb) : _color{rgb} { }
+
     inline const Vector &color() const {
         return _color;
     }

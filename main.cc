@@ -5,7 +5,7 @@ using namespace std;
 #include "scene.h"
 
 int main() {
-    Scene scene("/home/lihe/Desktop/parser/simpletestscene.txt");
+    Scene scene("/home/lihe/Desktop/parser/chess.txt");
 
     scene.render();
     return 0;

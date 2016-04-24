@@ -12,6 +12,8 @@ class SceneConfig {
 public:
     friend class Scene;
 
+    SceneConfig() : _render_flag{Render::BVH}, _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5} { }
+
     const Render &render_flag() const {
         return _render_flag;
     }
@@ -43,6 +45,7 @@ public:
     void recursive_limit(int recursive_limit) {
         SceneConfig::_recursive_limit = recursive_limit;
     }
+
 private:
     Render _render_flag;
     int _pixel_sampling_num;

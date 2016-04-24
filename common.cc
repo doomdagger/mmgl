@@ -1,5 +1,6 @@
 //
-// Created by lihe on 4/22/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
 #include "common.h"
@@ -57,6 +58,7 @@ void parseObjFile(const std::string &file, std::vector<int> &tris, std::vector<f
 
     if (!in.good()) {
         std::cout << "Fails at reading file " << file << std::endl;
+        return;
     }
 
     char buffer[1025];

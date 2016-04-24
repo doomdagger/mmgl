@@ -145,21 +145,21 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
     const Surface &surface = *intersection.id();
     const Material &material = surface.material();
     // iterate over all lights, use iterator
-    for (std::vector<Light *>::const_iterator l_iter = lights.begin(); l_iter != lights.end(); ++l_iter) {
-        if (PointLight *pointLight = dynamic_cast<PointLight *>(*l_iter)) {  // For point light
+    for (auto &light_ptr : lights) {
+        if (PointLight *pointLight = dynamic_cast<PointLight *>(light_ptr)) {  // For point light
             // compute shading
             rgb += blinn_phong(ray, pointLight->orig(), pointLight->color(), intersection, material, objects, parent,
                                flag).second;
-        } else if (AmbientLight *ambientLight = dynamic_cast<AmbientLight *>(*l_iter)) {  // for ambient light
+        } else if (AmbientLight *ambientLight = dynamic_cast<AmbientLight *>(light_ptr)) {  // for ambient light
             rgb += material.kd() * ambientLight->color();
-        } else if (AreaLight *areaLight = dynamic_cast<AreaLight *>(*l_iter)) {    // for square area light
+        } else if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light_ptr)) {    // for square area light
             Vector sub_rgb;
             if (s_sampling_num == 1) {
                 // compute shading
                 std::pair<bool, Vector> temp = blinn_phong(ray, areaLight->orig(), areaLight->color(), intersection,
                                                            material, objects, parent, flag);
                 if (temp.first) {
-                    // create light ray from intersection point, shadow ray
+                    // create light vector from intersection point
                     Vector lightRayDir = areaLight->orig() - intersection.point();
                     float interMagnitude = lightRayDir.magnitude();
                     lightRayDir /= interMagnitude;
@@ -173,7 +173,7 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
                     std::pair<bool, Vector> temp = blinn_phong(ray, sample_p, areaLight->color(), intersection,
                                                                material, objects, parent, flag);
                     if (temp.first) {
-                        // create light ray from intersection point, shadow ray
+                        // create light vector from intersection point
                         Vector lightRayDir = sample_p - intersection.point();
                         float interMagnitude = lightRayDir.magnitude();
                         lightRayDir /= interMagnitude;
@@ -207,31 +207,15 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
 
 void Camera::render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                     const BVHNode *const parent, const SceneConfig &sceneConfig) {
-    const int recursive_time = sceneConfig.recursive_limit();
     const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
-    // seeds first
+    // seeds first, globally
     std::srand(static_cast<unsigned>(time(0)));
-    auto rand_float = []() { return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX); };
 
     for (int y = 0; y < _ny; ++y) {
         for (int x = 0; x < _nx; ++x) {
             Imf::Rgba &rgba = _image[y][x];
-            Vector rgb;
 
-            if (sceneConfig.pixel_sampling_num() == 1) {
-                Ray ray = project_pixel(x, y);
-                rgb += L(ray, recursive_time, nullptr, objects, lights, parent, sceneConfig.render_flag(),
-                         sceneConfig.shadow_sampling_num());
-            } else {
-                for (int p = 0; p < sceneConfig.pixel_sampling_num(); p++) {
-                    for (int q = 0; q < sceneConfig.pixel_sampling_num(); q++) {
-                        Ray sampling_ray = project_pixel(x + (p + rand_float()) / sceneConfig.pixel_sampling_num(),
-                                                         y + (q + rand_float()) / sceneConfig.pixel_sampling_num());
-                        rgb += L(sampling_ray, recursive_time, nullptr, objects, lights, parent,
-                                 sceneConfig.render_flag(), sceneConfig.shadow_sampling_num());
-                    }
-                }
-            }
+            Vector rgb = render_pixel(x, y, objects, lights, parent, sceneConfig);
 
             rgb /= sampling_num_pow2;
             rgba.r = rgb.x();
@@ -240,6 +224,31 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
             rgba.a = 1;
         }
     }
+}
+
+/**
+ * This method can be applied in multi-threading, render each pixel discretely
+ */
+Vector Camera::render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+                            const BVHNode *const parent, const SceneConfig &sceneConfig) {
+    Vector rgb;
+
+    if (sceneConfig.pixel_sampling_num() == 1) {
+        Ray ray = project_pixel(x, y);
+        rgb += L(ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent, sceneConfig.render_flag(),
+                 sceneConfig.shadow_sampling_num());
+    } else {
+        for (int p = 0; p < sceneConfig.pixel_sampling_num(); p++) {
+            for (int q = 0; q < sceneConfig.pixel_sampling_num(); q++) {
+                Ray sampling_ray = project_pixel(x + (p + rand_float()) / sceneConfig.pixel_sampling_num(),
+                                                 y + (q + rand_float()) / sceneConfig.pixel_sampling_num());
+                rgb += L(sampling_ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent,
+                         sceneConfig.render_flag(), sceneConfig.shadow_sampling_num());
+            }
+        }
+    }
+
+    return std::move(rgb);
 }
 
 const Imf::Rgba *Camera::image() const {
@@ -254,7 +263,7 @@ int Camera::height() const {
     return _ny;
 }
 
-void Camera::writeRgba(const std::string &fileName) const{
+void Camera::writeRgba(const std::string &fileName) const {
     //
     // Write an RGBA image using class RgbaOutputFile.
     //

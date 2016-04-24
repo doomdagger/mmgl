@@ -20,9 +20,10 @@ enum class Render {
     BVH = 3
 };
 
-float getTokenAsFloat(std::string inString, int whichToken);
+float get_token_as_float(std::string inString, int whichToken);
 
-void parseObjFile(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);
+void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);
 
+float rand_float();
 
 #endif //RAYTRACER_COMMON_H

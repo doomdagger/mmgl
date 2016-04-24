@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "light.h"
+#include "common.h"
 
 class AreaLight : public Light {
 public:

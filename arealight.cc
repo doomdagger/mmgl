@@ -14,7 +14,6 @@ std::vector<Point> AreaLight::sample(int sampling_num) {
     }
 
     float half_len = _len * 0.5f;
-    auto rand_float = []() { return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX); };
     float step_size = _len / sampling_num;
     for (int p = 0; p < sampling_num; p++) {
         for (int q = 0; q < sampling_num; q++) {

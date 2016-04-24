@@ -49,7 +49,7 @@ public:
 
     inline void intersection(Intersection &&intersection) {
         _has_intersect = true;
-        Ray::_intersection = intersection;
+        _intersection = intersection;
     }
 
     bool updatable(float t) const;

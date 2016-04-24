@@ -13,7 +13,7 @@
 //
 // you really don't need to know what is going on in here, I think.
 //
-float getTokenAsFloat(std::string inString, int whichToken) {
+float get_token_as_float(std::string inString, int whichToken) {
 
     float thisFloatVal;    // the return value
 
@@ -49,7 +49,7 @@ float getTokenAsFloat(std::string inString, int whichToken) {
 }
 
 
-void parseObjFile(const std::string &file, std::vector<int> &tris, std::vector<float> &verts) {
+void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts) {
     // clear out the tris and verts vectors:
     tris.clear();
     verts.clear();
@@ -110,4 +110,8 @@ void parseObjFile(const std::string &file, std::vector<int> &tris, std::vector<f
     }
 
     in.close();
+}
+
+float rand_float() {
+    return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 }

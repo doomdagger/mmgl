@@ -41,6 +41,10 @@ public:
     void render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                 const BVHNode *const parent, const SceneConfig &sceneConfig);
 
+    // add this function for multithreading
+    Vector render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+                        const BVHNode *const parent, const SceneConfig &sceneConfig);
+
     Vector L(Ray &ray, int recursive_limit, const Surface *const object_id,
              const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
              const BVHNode *const parent, const Render &flag, int s_sampling_num);

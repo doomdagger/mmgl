@@ -69,7 +69,7 @@ public:
 private:
     std::map<unsigned long, Surface *> _surfaces;
     std::map<unsigned long, Light *> _lights;
-
+ 
     unsigned long _surface_id = 0;
     unsigned long _light_id = 0;
 

@@ -47,10 +47,10 @@ Scene::Scene(const std::string &scene_file) {
             case 's':
                 // it's a sphere, load in the parameters
 
-                x = getTokenAsFloat(line, 1);
-                y = getTokenAsFloat(line, 2);
-                z = getTokenAsFloat(line, 3);
-                r = getTokenAsFloat(line, 4);
+                x = get_token_as_float(line, 1);
+                y = get_token_as_float(line, 2);
+                z = get_token_as_float(line, 3);
+                r = get_token_as_float(line, 4);
 
                 // build your sphere here from the parameters
                 // i.e. you must call your sphere constructor and set its position
@@ -62,15 +62,15 @@ Scene::Scene(const std::string &scene_file) {
                 break;
 
             case 't':   // triangle
-                x = getTokenAsFloat(line, 1);
-                y = getTokenAsFloat(line, 2);
-                z = getTokenAsFloat(line, 3);
-                x2 = getTokenAsFloat(line, 4);
-                y2 = getTokenAsFloat(line, 5);
-                z2 = getTokenAsFloat(line, 6);
-                x3 = getTokenAsFloat(line, 7);
-                y3 = getTokenAsFloat(line, 8);
-                z3 = getTokenAsFloat(line, 9);
+                x = get_token_as_float(line, 1);
+                y = get_token_as_float(line, 2);
+                z = get_token_as_float(line, 3);
+                x2 = get_token_as_float(line, 4);
+                y2 = get_token_as_float(line, 5);
+                z2 = get_token_as_float(line, 6);
+                x3 = get_token_as_float(line, 7);
+                y3 = get_token_as_float(line, 8);
+                z3 = get_token_as_float(line, 9);
 
                 NewTriangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
 
@@ -83,17 +83,17 @@ Scene::Scene(const std::string &scene_file) {
                 // one trick here: the cameras pixel count (width, height) are integers,
                 // so cast them.
 
-                x = getTokenAsFloat(line, 1);
-                y = getTokenAsFloat(line, 2);
-                z = getTokenAsFloat(line, 3);
-                x2 = getTokenAsFloat(line, 4);
-                y2 = getTokenAsFloat(line, 5);
-                z2 = getTokenAsFloat(line, 6);
-                d = getTokenAsFloat(line, 7);
-                iw = getTokenAsFloat(line, 8);
-                ih = getTokenAsFloat(line, 9);
-                pw = static_cast<int>(getTokenAsFloat(line, 10));
-                ph = static_cast<int>(getTokenAsFloat(line, 11));
+                x = get_token_as_float(line, 1);
+                y = get_token_as_float(line, 2);
+                z = get_token_as_float(line, 3);
+                x2 = get_token_as_float(line, 4);
+                y2 = get_token_as_float(line, 5);
+                z2 = get_token_as_float(line, 6);
+                d = get_token_as_float(line, 7);
+                iw = get_token_as_float(line, 8);
+                ih = get_token_as_float(line, 9);
+                pw = static_cast<int>(get_token_as_float(line, 10));
+                ph = static_cast<int>(get_token_as_float(line, 11));
 
                 _camera.config(x, y, z, d, x2, y2, z2, pw, ph, iw, ih);
 
@@ -108,12 +108,12 @@ Scene::Scene(const std::string &scene_file) {
                 // which is at the third position on the line:
                 switch (line[2]) {
                     case 'p':   // point light
-                        x = getTokenAsFloat(line, 2);
-                        y = getTokenAsFloat(line, 3);
-                        z = getTokenAsFloat(line, 4);
-                        r = getTokenAsFloat(line, 5);
-                        g = getTokenAsFloat(line, 6);
-                        b = getTokenAsFloat(line, 7);
+                        x = get_token_as_float(line, 2);
+                        y = get_token_as_float(line, 3);
+                        z = get_token_as_float(line, 4);
+                        r = get_token_as_float(line, 5);
+                        g = get_token_as_float(line, 6);
+                        b = get_token_as_float(line, 7);
 
                         NewPointLight(x, y, z, r, g, b);
 
@@ -122,27 +122,27 @@ Scene::Scene(const std::string &scene_file) {
                         break;
                     case 'a':   // ambient light
 
-                        r = getTokenAsFloat(line, 2);
-                        g = getTokenAsFloat(line, 3);
-                        b = getTokenAsFloat(line, 4);
+                        r = get_token_as_float(line, 2);
+                        g = get_token_as_float(line, 3);
+                        b = get_token_as_float(line, 4);
 
                         NewAmbientLight(r, g, b);
 
                         break;
                     case 's':   // square area light
-                        x = getTokenAsFloat(line, 2);
-                        y = getTokenAsFloat(line, 3);
-                        z = getTokenAsFloat(line, 4);
-                        x2 = getTokenAsFloat(line, 5);
-                        y2 = getTokenAsFloat(line, 6);
-                        z2 = getTokenAsFloat(line, 7);
-                        x3 = getTokenAsFloat(line, 8);
-                        y3 = getTokenAsFloat(line, 9);
-                        z3 = getTokenAsFloat(line, 10);
-                        d = getTokenAsFloat(line, 11);
-                        r = getTokenAsFloat(line, 12);
-                        g = getTokenAsFloat(line, 13);
-                        b = getTokenAsFloat(line, 14);
+                        x = get_token_as_float(line, 2);
+                        y = get_token_as_float(line, 3);
+                        z = get_token_as_float(line, 4);
+                        x2 = get_token_as_float(line, 5);
+                        y2 = get_token_as_float(line, 6);
+                        z2 = get_token_as_float(line, 7);
+                        x3 = get_token_as_float(line, 8);
+                        y3 = get_token_as_float(line, 9);
+                        z3 = get_token_as_float(line, 10);
+                        d = get_token_as_float(line, 11);
+                        r = get_token_as_float(line, 12);
+                        g = get_token_as_float(line, 13);
+                        b = get_token_as_float(line, 14);
 
                         NewAreaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
 
@@ -166,23 +166,23 @@ Scene::Scene(const std::string &scene_file) {
                 //  2. call lastMaterialLoaded->setMaterial(dr, dg, db,...);
                 //
 
-                dr = getTokenAsFloat(line, 1);
-                dg = getTokenAsFloat(line, 2);
-                db = getTokenAsFloat(line, 3);
-                sr = getTokenAsFloat(line, 4);
-                sg = getTokenAsFloat(line, 5);
-                sb = getTokenAsFloat(line, 6);
-                r = getTokenAsFloat(line, 7);
-                ir = getTokenAsFloat(line, 8);
-                ig = getTokenAsFloat(line, 9);
-                ib = getTokenAsFloat(line, 10);
+                dr = get_token_as_float(line, 1);
+                dg = get_token_as_float(line, 2);
+                db = get_token_as_float(line, 3);
+                sr = get_token_as_float(line, 4);
+                sg = get_token_as_float(line, 5);
+                sb = get_token_as_float(line, 6);
+                r = get_token_as_float(line, 7);
+                ir = get_token_as_float(line, 8);
+                ig = get_token_as_float(line, 9);
+                ib = get_token_as_float(line, 10);
 
                 lastMaterialLoaded = Material{dr, dg, db, sr, sg, sb, ir, ig, ib, r};
 
                 break;
 
             case 'w':
-                parseObjFile(line.substr(line.find(' ') + 1), tris, verts);
+                parse_obj_file(line.substr(line.find(' ') + 1), tris, verts);
 
                 n = tris.size() / 3;
                 for (unsigned long i = 0; i < n; ++i) {
@@ -333,3 +333,4 @@ void Scene::ConfigCamera(float x, float y, float z, float d, float dx, float dy,
 void Scene::save(const std::string &file_path) const {
     _camera.writeRgba(file_path);
 }
+

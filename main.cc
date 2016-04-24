@@ -7,6 +7,9 @@ using namespace std;
 int main() {
     Scene scene;
 
+    scene.config.pixel_sampling_num(3);
+    scene.config.render_flag(Render::BBOX_ONLY);
+
     scene.NewSphere(0, 13.67f, -62.57f, 10);
 
     scene.NewPointLight(-80, 120, -46.6f, 1, 1, 1);

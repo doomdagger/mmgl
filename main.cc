@@ -2,7 +2,11 @@
 
 using namespace std;
 
+#include "scene.h"
+
 int main() {
-    cout << "Hello, World!" << endl;
+    Scene scene("/home/lihe/Desktop/parser/simpletestscene.txt");
+
+    scene.render();
     return 0;
 }

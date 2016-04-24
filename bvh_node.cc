@@ -4,8 +4,8 @@
 
 #include "bvh_node.h"
 
-Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::const_iterator &begin,
-                                        const std::vector<Surface *>::const_iterator &end) {
+Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
+                                  const std::vector<Surface *>::iterator &end) {
     if (begin == end) {
         return nullptr;
     } else if (begin + 1 == end) {
@@ -23,7 +23,7 @@ Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::const_iterator &
         }
         std::sort(begin, end, BBoxComparable{flag});
         // volume based cut --- binary search
-        std::vector<Surface *>::const_iterator median = determine_cut(begin, end);
+        std::vector<Surface *>::iterator median = determine_cut(begin, end);
 
         node->_left = create_bvh_tree(begin, median);
         node->_right = create_bvh_tree(median, end);
@@ -98,8 +98,8 @@ void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const Surface *co
     }
 }
 
-const std::vector<Surface *>::const_iterator BVHNode::determine_cut(const std::vector<Surface *>::const_iterator &begin,
-                                                                  const std::vector<Surface *>::const_iterator &end) {
+const std::vector<Surface *>::iterator BVHNode::determine_cut(const std::vector<Surface *>::iterator &begin,
+                                                              const std::vector<Surface *>::iterator &end) {
     unsigned long size = end - begin;
     unsigned long median = size / 2;
     unsigned long first = 0, last = size;

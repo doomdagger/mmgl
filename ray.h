@@ -59,7 +59,7 @@ private:
     Point _origin;
     Vector _dir;
     bool _has_intersect;
-    Intersection _intersection; // closest intersection
+    Intersection   _intersection; // closest intersection
 };
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray);

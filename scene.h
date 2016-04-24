@@ -20,7 +20,7 @@
 
 class Scene {
 public:
-    Scene() : _surfaces{}, _lights{}, _camera{}, config{} {}
+    Scene() : _surfaces{}, _lights{}, _camera{}, config{} { }
 
     Scene(const std::string &scene_file);
 

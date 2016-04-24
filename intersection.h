@@ -38,7 +38,7 @@ private:
     float _t;
     Point _point;
     Vector _normal;
-    const Surface * _id;
+    const Surface *_id;
 };
 
 #endif //RAYTRACER_INTERSECTION_H

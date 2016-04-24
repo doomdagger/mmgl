@@ -21,7 +21,7 @@ public:
 private:
     // create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers
     static Surface *create_bvh_tree(const std::vector<Surface *>::iterator &begin,
-                                          const std::vector<Surface *>::iterator &end);
+                                    const std::vector<Surface *>::iterator &end);
 
     // helper function, compute volume
     static float compute_volume(const std::vector<Surface *>::const_iterator &begin,
@@ -29,7 +29,7 @@ private:
 
     // helper function, determine cut position
     static const std::vector<Surface *>::iterator determine_cut(const std::vector<Surface *>::iterator &begin,
-                                                                    const std::vector<Surface *>::iterator &end);
+                                                                const std::vector<Surface *>::iterator &end);
 
     // intersect function, from parent node to all its leaves
     static void intersect(Ray &ray, const BVHNode *const parent, const Surface *const surface, const Render &flag);

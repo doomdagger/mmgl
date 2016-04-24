@@ -24,5 +24,4 @@ float getTokenAsFloat(std::string inString, int whichToken);
 void parseObjFile(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);
 
 
-
 #endif //RAYTRACER_COMMON_H

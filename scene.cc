@@ -57,7 +57,7 @@ Scene::Scene(const std::string &scene_file) {
                 // and radius from the above values. You must also put your new
                 // sphere into the objects list (which can be global)
                 // So something like;
-                NewSphere(x, y, z, r, lastMaterialLoaded);
+                sphere(x, y, z, r, lastMaterialLoaded);
 
                 break;
 
@@ -72,7 +72,7 @@ Scene::Scene(const std::string &scene_file) {
                 y3 = get_token_as_float(line, 8);
                 z3 = get_token_as_float(line, 9);
 
-                NewTriangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
 
                 break;
 
@@ -115,7 +115,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 6);
                         b = get_token_as_float(line, 7);
 
-                        NewPointLight(x, y, z, r, g, b);
+                        pointLight(x, y, z, r, g, b);
 
                         break;
                     case 'd':   // directional light
@@ -126,7 +126,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 3);
                         b = get_token_as_float(line, 4);
 
-                        NewAmbientLight(r, g, b);
+                        ambientLight(r, g, b);
 
                         break;
                     case 's':   // square area light
@@ -144,7 +144,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 13);
                         b = get_token_as_float(line, 14);
 
-                        NewAreaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
+                        areaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
 
                         break;
                     default:
@@ -195,7 +195,7 @@ Scene::Scene(const std::string &scene_file) {
                     x3 = verts[3 * tris[3 * i + 2]];
                     y3 = verts[3 * tris[3 * i + 2] + 1];
                     z3 = verts[3 * tris[3 * i + 2] + 2];
-                    NewTriangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                    triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
                 }
 
                 break;
@@ -265,35 +265,35 @@ void Scene::render() {
     }
 }
 
-unsigned long Scene::NewSphere(float x, float y, float z, float radius, const Material &material) {
+unsigned long Scene::sphere(float x, float y, float z, float radius, const Material &material) {
     Surface *surface = new Sphere(x, y, z, radius);
     surface->material(material);
     _surfaces[++_surface_id] = surface;
     return _surface_id;
 }
 
-unsigned long Scene::NewTriangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
-                                 float z3, const Material &material) {
+unsigned long Scene::triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
+                              float z3, const Material &material) {
     Surface *surface = new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3);
     surface->material(material);
     _surfaces[++_surface_id] = surface;
     return _surface_id;
 }
 
-unsigned long Scene::NewPointLight(float x, float y, float z, float r, float g, float b) {
+unsigned long Scene::pointLight(float x, float y, float z, float r, float g, float b) {
     Light *light = new PointLight(x, y, z, r, g, b);
     _lights[++_light_id] = light;
     return _light_id;
 }
 
-unsigned long Scene::NewAreaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
-                                  float len, float r, float g, float b) {
+unsigned long Scene::areaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
+                               float len, float r, float g, float b) {
     Light *light = new AreaLight{x, y, z, nx, ny, nz, ux, uy, uz, len, r, g, b};
     _lights[++_light_id] = light;
     return _light_id;
 }
 
-unsigned long Scene::NewAmbientLight(float r, float g, float b) {
+unsigned long Scene::ambientLight(float r, float g, float b) {
     Light *light = new AmbientLight{r, g, b};
     _lights[++_light_id] = light;
     return _light_id;
@@ -325,7 +325,7 @@ const std::vector<Light *> Scene::lights() const {
     return std::move(ret);
 }
 
-void Scene::ConfigCamera(float x, float y, float z, float d, float dx, float dy, float dz, int nx, int ny, float iw,
+void Scene::configCamera(float x, float y, float z, float d, float dx, float dy, float dz, int nx, int ny, float iw,
                          float ih) {
     _camera.config(x, y, z, d, dx, dy, dz, nx, ny, iw, ih);
 }

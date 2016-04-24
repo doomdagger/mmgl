@@ -31,6 +31,14 @@ public:
         return _radius;
     }
 
+    Sphere &at(const Point &central);
+
+    Sphere &at(float x, float y, float z);
+
+    Sphere &radius(float radius);
+
+    Sphere &made_of(const Material &material);
+
 private:
     void init() {
         float x_min, y_min, z_min, x_max, y_max, z_max;

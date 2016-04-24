@@ -15,9 +15,13 @@ public:
 
     Light(const Vector &rgb) : _color{rgb} { }
 
-    inline const Vector &color() const {
+    virtual inline const Vector &color() const {
         return _color;
     }
+
+    void color(const Vector &color);
+
+    void color(float r, float g, float b);
 
     virtual ~Light() { };
 private:

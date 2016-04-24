@@ -26,6 +26,24 @@ public:
 
     std::vector<Point> sample(int sampling_num);
 
+    AreaLight &in(const Vector &color);
+
+    AreaLight &in(float r, float g, float b);
+
+    AreaLight &at(const Point &position);
+
+    AreaLight &at(float x, float y, float z);
+
+    AreaLight &facing(const Vector &norm);
+
+    AreaLight &facing(float x, float y, float z);
+
+    AreaLight &forward(const Vector &u);
+
+    AreaLight &forward(float x, float y, float z);
+
+    AreaLight &length(float len);
+
     inline const Point &orig() const {
         return _orig;
     }

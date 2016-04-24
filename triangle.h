@@ -24,6 +24,20 @@ public:
 
     std::string to_string() const;
 
+    Triangle &point_one(const Point &p1);
+
+    Triangle &point_two(const Point &p2);
+
+    Triangle &point_three(const Point &p3);
+
+    Triangle &point_one(float x, float y, float z);
+
+    Triangle &point_two(float x, float y, float z);
+
+    Triangle &point_three(float x, float y, float z);
+
+    Triangle &made_of(const Material &material);
+
 private:
     void init() {
         Vector p12 = _p2 - _p1;

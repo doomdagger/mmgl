@@ -25,3 +25,64 @@ std::vector<Point> AreaLight::sample(int sampling_num) {
     }
     return std::move(samples);
 }
+
+AreaLight &AreaLight::in(const Vector &color) {
+    Light::color(color);
+    return *this;
+}
+
+AreaLight &AreaLight::in(float r, float g, float b) {
+    Light::color(r, g, b);
+    return *this;
+}
+
+AreaLight &AreaLight::at(const Point &position) {
+    _orig.x(position.x());
+    _orig.y(position.y());
+    _orig.z(position.z());
+    return *this;
+}
+
+AreaLight &AreaLight::at(float x, float y, float z) {
+    _orig.x(x);
+    _orig.y(y);
+    _orig.z(z);
+    return *this;
+}
+
+AreaLight &AreaLight::facing(const Vector &norm) {
+    _norm.x(norm.x());
+    _norm.y(norm.y());
+    _norm.z(norm.z());
+    init();
+    return *this;
+}
+
+AreaLight &AreaLight::facing(float x, float y, float z) {
+    _norm.x(x);
+    _norm.y(y);
+    _norm.z(z);
+    init();
+    return *this;
+}
+
+AreaLight &AreaLight::forward(const Vector &u) {
+    _u.x(u.x());
+    _u.y(u.y());
+    _u.z(u.z());
+    init();
+    return *this;
+}
+
+AreaLight &AreaLight::forward(float x, float y, float z) {
+    _u.x(x);
+    _u.y(y);
+    _u.z(z);
+    init();
+    return *this;
+}
+
+AreaLight &AreaLight::length(float len) {
+    _len = len;
+    return *this;
+}

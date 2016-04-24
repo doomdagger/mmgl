@@ -22,9 +22,13 @@ public:
         return _orig;
     }
 
-    inline void orig(const Point &orig) {
-        PointLight::_orig = orig;
-    }
+    PointLight &in(const Vector &color);
+
+    PointLight &in(float r, float g, float b);
+
+    PointLight &at(const Point &position);
+
+    PointLight &at(float x, float y, float z);
 
 private:
     Point _orig;

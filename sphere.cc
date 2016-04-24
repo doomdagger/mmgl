@@ -68,3 +68,30 @@ std::string Sphere::to_string() const {
     os << "\tradius: " << _radius << std::flush;
     return os.str();
 }
+
+Sphere &Sphere::at(const Point &central) {
+    _origin._x = central._x;
+    _origin._y = central._y;
+    _origin._z = central._z;
+    init();
+    return *this;
+}
+
+Sphere &Sphere::at(float x, float y, float z) {
+    _origin._x = x;
+    _origin._y = y;
+    _origin._z = z;
+    init();
+    return *this;
+}
+
+Sphere &Sphere::radius(float radius) {
+    _radius = radius;
+    init();
+    return *this;
+}
+
+Sphere &Sphere::made_of(const Material &material) {
+    Surface::material(material);
+    return *this;
+}

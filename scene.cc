@@ -255,23 +255,25 @@ void Scene::render() {
     std::cout << "Finish rendering in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
 
     // clean up memory, using BFS
-    std::queue<BVHNode *> q;
-    q.push(parent);
-    while (!q.empty()) {
-        BVHNode *node = q.front();
-        q.pop();
+    if (parent) {
+        std::queue<BVHNode *> q;
+        q.push(parent);
+        while (!q.empty()) {
+            BVHNode *node = q.front();
+            q.pop();
 
-        BVHNode *node_left = nullptr;
-        BVHNode *node_right = nullptr;
+            BVHNode *node_left = nullptr;
+            BVHNode *node_right = nullptr;
 
-        if (node->_left && (node_left = dynamic_cast<BVHNode *>(node->_left))) {
-            q.push(node_left);
+            if (node->_left && (node_left = dynamic_cast<BVHNode *>(node->_left))) {
+                q.push(node_left);
+            }
+            if (node->_right && (node_right = dynamic_cast<BVHNode *>(node->_right))) {
+                q.push(node_right);
+            }
+
+            delete node;
         }
-        if (node->_right && (node_right = dynamic_cast<BVHNode *>(node->_right))) {
-            q.push(node_right);
-        }
-
-        delete node;
     }
 }
 

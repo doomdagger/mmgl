@@ -14,6 +14,10 @@ public:
     AmbientLight(float r, float g, float b) : Light{r, g, b} { }
 
     AmbientLight(const Vector &rgb) : Light{rgb} { }
+
+    AmbientLight &in(const Vector &color);
+
+    AmbientLight &in(float r, float g, float b);
 };
 
 

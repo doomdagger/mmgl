@@ -77,3 +77,56 @@ std::string Triangle::to_string() const {
     os << "\tp3: " << _p3 << std::flush;
     return os.str();
 }
+
+Triangle &Triangle::point_one(const Point &p1) {
+    _p1._x = p1._x;
+    _p1._y = p1._y;
+    _p1._z = p1._z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::point_two(const Point &p2) {
+    _p2._x = p2._x;
+    _p2._y = p2._y;
+    _p2._z = p2._z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::point_three(const Point &p3) {
+    _p3._x = p3._x;
+    _p3._y = p3._y;
+    _p3._z = p3._z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::point_one(float x, float y, float z) {
+    _p1._x = x;
+    _p1._y = y;
+    _p1._z = z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::point_two(float x, float y, float z) {
+    _p2._x = x;
+    _p2._y = y;
+    _p2._z = z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::point_three(float x, float y, float z) {
+    _p3._x = x;
+    _p3._y = y;
+    _p3._z = z;
+    init();
+    return *this;
+}
+
+Triangle &Triangle::made_of(const Material &material) {
+    Surface::material(material);
+    return *this;
+}

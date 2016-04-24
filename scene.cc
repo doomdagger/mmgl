@@ -1,5 +1,6 @@
 //
-// Created by lihe on 4/22/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
 #include "scene.h"
@@ -9,8 +10,7 @@ Scene::Scene(const std::string &scene_file) {
     std::string line;
 
     if (!inFile.is_open()) {  // if it's not open, error out.
-        std::cerr << "can't open scene file" << std::endl;
-        exit(-1);
+        throw new std::runtime_error("Scene: Cannot open scene file '" + scene_file + "'");
     }
 
     // Note: you'll have to keep track of whatever the last material
@@ -57,15 +57,8 @@ Scene::Scene(const std::string &scene_file) {
                 // and radius from the above values. You must also put your new
                 // sphere into the objects list (which can be global)
                 // So something like;
-                {
-                    NewSphere(x, y, z, r, lastMaterialLoaded);
-                }
+                NewSphere(x, y, z, r, lastMaterialLoaded);
 
-#ifdef IM_DEBUGGING
-            // if we're debugging, show what we got:
-                cout << "got a sphere with ";
-                cout << "parameters: " << x << " " << y << " " << z << " " << r << endl;
-#endif
                 break;
 
             case 't':   // triangle
@@ -79,25 +72,9 @@ Scene::Scene(const std::string &scene_file) {
                 y3 = getTokenAsFloat(line, 8);
                 z3 = getTokenAsFloat(line, 9);
 
-                {
-                    NewTriangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
-                }
+                NewTriangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
 
                 break;
-
-//            case 'p':   // plane
-//                x = getTokenAsFloat(line, 1);
-//                y = getTokenAsFloat(line, 2);
-//                z = getTokenAsFloat(line, 3);
-//                d = getTokenAsFloat(line, 4);
-//
-//                {
-//                    Plane *plane = new Plane{x, y, z, d};
-//                    plane->material(lastMaterialLoaded);
-//                    objects.push_back(plane);
-//                }
-//
-//                break;
 
                 //
                 // camera:
@@ -138,9 +115,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = getTokenAsFloat(line, 6);
                         b = getTokenAsFloat(line, 7);
 
-                        {
-                            NewPointLight(x, y, z, r, g, b);
-                        }
+                        NewPointLight(x, y, z, r, g, b);
 
                         break;
                     case 'd':   // directional light
@@ -151,9 +126,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = getTokenAsFloat(line, 3);
                         b = getTokenAsFloat(line, 4);
 
-                        {
-                            NewAmbientLight(r, g, b);
-                        }
+                        NewAmbientLight(r, g, b);
 
                         break;
                     case 's':   // square area light
@@ -171,9 +144,7 @@ Scene::Scene(const std::string &scene_file) {
                         g = getTokenAsFloat(line, 13);
                         b = getTokenAsFloat(line, 14);
 
-                        {
-                            NewAreaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
-                        }
+                        NewAreaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
 
                         break;
                     default:
@@ -251,11 +222,14 @@ void Scene::render() {
     if (_surfaces.empty()) {
         std::cerr << "Please at least pass in one surface to render, or do you really want a fully-dark image?" <<
         std::endl;
+        return;
     }
 
     std::vector<Surface *> objects_vec = surfaces();
     std::vector<Light *> lights_vec = lights();
 
+    std::cout << "Start to build BVH Tree..." << std::endl;
+    std::clock_t beg = clock();
     // in case we only have one surface
     BVHNode *parent = nullptr;
     // in case of we only have one object
@@ -263,9 +237,14 @@ void Scene::render() {
         parent = new BVHNode(objects_vec.begin(), objects_vec.end());
         parent->_left = objects_vec[0];
     }
+    clock_t end = clock();
+    std::cout << "Finish building BVH Tree in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
 
+    std::cout << "Start to render..." << std::endl;
+    beg = clock();
     _camera.render(objects_vec, lights_vec, parent, config);
-    _camera.writeRgba("/home/lihe/Desktop/test.exr");
+    end = clock();
+    std::cout << "Finish rendering in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
 
     // clean up memory, using BFS
     std::queue<Surface *> q;
@@ -318,4 +297,39 @@ unsigned long Scene::NewAmbientLight(float r, float g, float b) {
     Light *light = new AmbientLight{r, g, b};
     _lights[++_light_id] = light;
     return _light_id;
+}
+
+Scene::~Scene() {
+    for (auto &elem : _surfaces) {
+        delete elem.second;
+    }
+
+    for (auto &elem : _lights) {
+        delete elem.second;
+    }
+}
+
+const std::vector<Surface *> Scene::surfaces() const {
+    std::vector<Surface *> ret;
+    for (auto &elem : _surfaces) {
+        ret.push_back(elem.second);
+    }
+    return std::move(ret);
+}
+
+const std::vector<Light *> Scene::lights() const {
+    std::vector<Light *> ret;
+    for (auto &elem : _lights) {
+        ret.push_back(elem.second);
+    }
+    return std::move(ret);
+}
+
+void Scene::ConfigCamera(float x, float y, float z, float d, float dx, float dy, float dz, int nx, int ny, float iw,
+                         float ih) {
+    _camera.config(x, y, z, d, dx, dy, dz, nx, ny, iw, ih);
+}
+
+void Scene::save(const std::string &file_path) const {
+    _camera.writeRgba(file_path);
 }

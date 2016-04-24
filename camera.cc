@@ -1,5 +1,6 @@
 //
-// Created by lihe on 2/8/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
 #include "camera.h"
@@ -211,8 +212,6 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
     // seeds first
     std::srand(static_cast<unsigned>(time(0)));
     auto rand_float = []() { return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX); };
-    std::cout << "Start to render..." << std::endl;
-    std::clock_t beg = clock();
 
     for (int y = 0; y < _ny; ++y) {
         for (int x = 0; x < _nx; ++x) {
@@ -241,9 +240,6 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
             rgba.a = 1;
         }
     }
-
-    clock_t end = clock();
-    std::cout << "Finish rendering in " << float(end - beg) / CLOCKS_PER_SEC << " second(s)" << std::endl;
 }
 
 const Imf::Rgba *Camera::image() const {
@@ -258,7 +254,7 @@ int Camera::height() const {
     return _ny;
 }
 
-void Camera::writeRgba(const std::string &fileName) {
+void Camera::writeRgba(const std::string &fileName) const{
     //
     // Write an RGBA image using class RgbaOutputFile.
     //

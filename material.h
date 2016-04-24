@@ -11,7 +11,7 @@
 class Material {
 public:
 
-    Material(float dr = 0, float dg = 0, float db = 0,
+    Material(float dr = 0.7f, float dg = 0.7f, float db = 0.7f,
              float sr = 0, float sg = 0, float sb = 0,
              float ir = 0, float ig = 0, float ib = 0,
              float r = 0) : _kd{dr, dg, db}, _ks{sr, sg, sb}, _ki{ir, ig, ib},

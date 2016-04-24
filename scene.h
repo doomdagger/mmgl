@@ -1,5 +1,6 @@
 //
-// Created by lihe on 4/22/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
 #ifndef RAYTRACER_SCENE_H
@@ -24,33 +25,26 @@ public:
 
     Scene(const std::string &scene_file);
 
-    const std::vector<Surface *> surfaces() const {
-        std::vector<Surface *> ret;
-        for (auto &elem : _surfaces) {
-            ret.push_back(elem.second);
-        }
-        return std::move(ret);
-    }
+    const std::vector<Surface *> surfaces() const;
 
-    const std::vector<Light *> lights() const {
-        std::vector<Light *> ret;
-        for (auto &elem : _lights) {
-            ret.push_back(elem.second);
-        }
-        return std::move(ret);
-    }
+    const std::vector<Light *> lights() const;
 
-    const Camera &camera() const {
+    inline const Camera &camera() const {
         return _camera;
     }
 
+    void ConfigCamera(float x, float y, float z, float d, float dx, float dy, float dz,
+                      int nx, int ny, float iw, float ih);
+
     void render();
 
-    unsigned long NewSphere(float x, float y, float z, float radius, const Material &material);
+    void save(const std::string &file_path) const;
+
+    unsigned long NewSphere(float x, float y, float z, float radius, const Material &material = Material{});
 
     unsigned long NewTriangle(float x1, float y1, float z1,
                               float x2, float y2, float z2,
-                              float x3, float y3, float z3, const Material &material);
+                              float x3, float y3, float z3, const Material &material = Material{});
 
     unsigned long NewPointLight(float x, float y, float z,
                                 float r, float g, float b);
@@ -59,6 +53,16 @@ public:
                                float ux, float uy, float uz, float len, float r, float g, float b);
 
     unsigned long NewAmbientLight(float r, float g, float b);
+
+    inline Surface *surface(unsigned long id) {
+        return _surfaces[id];
+    }
+
+    inline Light *light(unsigned long id) {
+        return _lights[id];
+    }
+
+    ~Scene();
 
     // public member field config for easy access
     SceneConfig config;

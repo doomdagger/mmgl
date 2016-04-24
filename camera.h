@@ -1,5 +1,6 @@
 //
-// Created by lihe on 4/23/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
 #ifndef RAYTRACER_CAMERA_H
@@ -30,9 +31,7 @@
 
 class Camera {
 public:
-    Camera(const Point &eye = Point(), float d = 0,
-           const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
-           int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);
+    friend class Scene;
 
     void config(float x, float y, float z, float d, float dx, float dy, float dz,
                 int nx, int ny, float iw, float ih);
@@ -52,7 +51,7 @@ public:
                                         const BVHNode *const parent,
                                         const Render &flag);
 
-    void writeRgba(const std::string &);
+    void writeRgba(const std::string &) const;
 
     const Imf::Rgba *image() const;
 
@@ -63,6 +62,10 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
 
 private:
+    Camera(const Point &eye = Point(), float d = 0,
+           const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
+           int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);
+
     Point _eye;
     float _d;
     Vector _u, _v, _w;  // both normalized

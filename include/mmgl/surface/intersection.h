@@ -9,6 +9,8 @@
 #include "mmgl/util/point.h"
 #include "mmgl/util/vector.h"
 
+namespace mmgl {
+
 class Surface;
 
 class Intersection {
@@ -41,5 +43,7 @@ private:
     Vector _normal;
     const Surface *_id;
 };
+
+}
 
 #endif //RAYTRACER_INTERSECTION_H

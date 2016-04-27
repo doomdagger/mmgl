@@ -5,7 +5,11 @@
 
 #include "mmgl/surface/surface.h"
 
+namespace mmgl {
+
 std::ostream &operator<<(std::ostream &os, const Surface &surface) {
     os << surface.to_string() << std::flush;
     return os;
+}
+
 }

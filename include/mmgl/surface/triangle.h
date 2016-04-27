@@ -12,6 +12,8 @@
 
 #include "mmgl/surface/surface.h"
 
+namespace mmgl {
+
 class Triangle : public Surface {
 public:
     Triangle(float x1 = 0, float y1 = 0, float z1 = 0,
@@ -72,5 +74,6 @@ private:
     float _a, _b, _c, _d, _e, _f;
 };
 
+}
 
 #endif //RAYTRACER_TRIANGLE_H

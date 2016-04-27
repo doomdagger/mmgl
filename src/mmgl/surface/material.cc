@@ -3,3 +3,6 @@
 // Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
 //
 
+namespace mmgl {
+
+}

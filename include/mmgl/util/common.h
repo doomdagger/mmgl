@@ -13,6 +13,8 @@
 #include <fstream>
 #include <sstream>
 
+namespace mmgl {
+
 enum class Render {
     NORMAL = 0,
     BBOX_ONLY = 1,
@@ -25,5 +27,7 @@ float get_token_as_float(std::string inString, int whichToken);
 void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);
 
 float rand_float();
+
+}
 
 #endif //RAYTRACER_COMMON_H

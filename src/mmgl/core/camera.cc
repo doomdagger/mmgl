@@ -5,6 +5,8 @@
 
 #include "mmgl/core/camera.h"
 
+namespace mmgl {
+
 /**
  * i: x
  * j: y
@@ -274,4 +276,6 @@ void Camera::writeRgba(const std::string &fileName) const {
     Imf::RgbaOutputFile file(fileName.c_str(), _nx, _ny, Imf::WRITE_RGBA);
     file.setFrameBuffer(image(), 1, static_cast<size_t >(_nx));
     file.writePixels(_ny);
+}
+
 }

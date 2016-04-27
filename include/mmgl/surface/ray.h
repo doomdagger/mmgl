@@ -15,6 +15,8 @@
 
 #define EPS 0.00005f
 
+namespace mmgl {
+
 class Ray {
 public:
     friend class Triangle;
@@ -64,5 +66,7 @@ private:
 };
 
 std::ostream &operator<<(std::ostream &os, const Ray &ray);
+
+}
 
 #endif //RAYTRACER_RAY_H

@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+namespace mmgl {
+
 class Point {
 public:
     friend class Triangle;
@@ -49,5 +51,7 @@ private:
 };
 
 std::ostream &operator<<(std::ostream &, const Point &);
+
+}
 
 #endif //RAYTRACER_POINT_H

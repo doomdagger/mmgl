@@ -5,6 +5,8 @@
 
 #include "mmgl/light/light.h"
 
+namespace mmgl {
+
 void Light::color(const Vector &color) {
     _color.x(color.x());
     _color.y(color.y());
@@ -15,4 +17,6 @@ void Light::color(float r, float g, float b) {
     _color.x(r);
     _color.y(g);
     _color.z(b);
+}
+
 }

@@ -13,6 +13,8 @@
 #include "mmgl/surface/surface.h"
 #include "mmgl/util/point.h"
 
+namespace mmgl {
+
 class Sphere : public Surface {
 public:
     Sphere(float x = 0, float y = 0, float z = 0, float r = 0);
@@ -57,5 +59,6 @@ private:
     float _radius;
 };
 
+}
 
 #endif //RAYTRACER_SPHERE_H

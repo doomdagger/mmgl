@@ -5,6 +5,8 @@
 
 #include "mmgl/util/common.h"
 
+namespace mmgl {
+
 // this is called from the parseSceneFile function, which uses
 // it to get the float from the correspoding position on the line.
 //
@@ -114,4 +116,6 @@ void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector
 
 float rand_float() {
     return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+}
+
 }

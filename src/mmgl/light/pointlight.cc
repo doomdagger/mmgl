@@ -5,6 +5,8 @@
 
 #include "mmgl/light/pointlight.h"
 
+namespace mmgl {
+
 PointLight &PointLight::in(const Vector &color) {
     Light::color(color);
     return *this;
@@ -27,4 +29,6 @@ PointLight &PointLight::at(float x, float y, float z) {
     _orig.y(y);
     _orig.z(z);
     return *this;
+}
+
 }

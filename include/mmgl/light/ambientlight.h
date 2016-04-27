@@ -9,6 +9,8 @@
 
 #include "mmgl/light/light.h"
 
+namespace mmgl {
+
 class AmbientLight : public Light {
 public:
     AmbientLight(float r, float g, float b) : Light{r, g, b} { }
@@ -20,5 +22,6 @@ public:
     AmbientLight &in(float r, float g, float b);
 };
 
+}
 
 #endif //RAYTRACER_AMBIENTLIGHT_H

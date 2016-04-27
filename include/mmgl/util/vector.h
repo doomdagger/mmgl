@@ -11,6 +11,8 @@
 
 #include "mmgl/util/point.h"
 
+namespace mmgl {
+
 class Vector {
 public:
     friend class Triangle;
@@ -92,5 +94,7 @@ Point operator+(const Point &point, const Vector &vector);
 std::ostream &operator<<(std::ostream &os, const Vector &vector);
 
 Vector bisector(const Vector &lhs, const Vector &rhs);
+
+}
 
 #endif //RAYTRACER_VECTOR_H

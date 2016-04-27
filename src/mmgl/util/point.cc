@@ -5,9 +5,13 @@
 
 #include "mmgl/util/point.h"
 
+namespace mmgl {
+
 Point::Point(float x, float y, float z) : _x{x}, _y{y}, _z{z} { }
 
 std::ostream &operator<<(std::ostream &os, const Point &p) {
     os << "Point: " << p.x() << " " << p.y() << " " << p.z() << std::flush;
     return os;
+}
+
 }

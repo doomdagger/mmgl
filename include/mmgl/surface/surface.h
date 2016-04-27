@@ -14,6 +14,8 @@
 #include "mmgl/surface/bbox.h"
 #include "mmgl/util/common.h"
 
+namespace mmgl {
+
 class Surface {
 public:
     virtual ~Surface() { }
@@ -54,5 +56,6 @@ private:
 
 std::ostream &operator<<(std::ostream &os, const Surface &surface);
 
+}
 
 #endif //RAYTRACER_SURFACE_H

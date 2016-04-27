@@ -5,6 +5,8 @@
 
 #include "mmgl/light/arealight.h"
 
+namespace mmgl {
+
 std::vector<Point> AreaLight::sample(int sampling_num) {
     std::vector<Point> samples;
 
@@ -85,4 +87,6 @@ AreaLight &AreaLight::forward(float x, float y, float z) {
 AreaLight &AreaLight::length(float len) {
     _len = len;
     return *this;
+}
+
 }

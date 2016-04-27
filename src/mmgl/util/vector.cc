@@ -5,6 +5,8 @@
 
 #include "mmgl/util/vector.h"
 
+namespace mmgl {
+
 Vector::Vector(float x, float y, float z) : _x{x}, _y{y}, _z{z} { }
 
 Vector Vector::cross(const Vector &vector) const {
@@ -94,4 +96,6 @@ Vector bisector(const Vector &lhs, const Vector &rhs) {
     vector += rhs;
     vector.normalize();
     return std::move(vector);
+}
+
 }

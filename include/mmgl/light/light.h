@@ -9,6 +9,8 @@
 
 #include "mmgl/util/vector.h"
 
+namespace mmgl {
+
 class Light {
 public:
     Light(float r = 0, float g = 0, float b = 0) : _color{r, g, b} { }
@@ -28,5 +30,6 @@ private:
     Vector _color;
 };
 
+}
 
 #endif //RAYTRACER_LIGHT_H

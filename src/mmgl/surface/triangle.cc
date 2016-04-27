@@ -5,6 +5,8 @@
 
 #include "mmgl/surface/triangle.h"
 
+namespace mmgl {
+
 Triangle::Triangle(float x1, float y1, float z1,
                    float x2, float y2, float z2,
                    float x3, float y3, float z3) : _p1{x1, y1, z1}, _p2{x2, y2, z2}, _p3{x3, y3, z3} {
@@ -129,4 +131,6 @@ Triangle &Triangle::point_three(float x, float y, float z) {
 Triangle &Triangle::made_of(const Material &material) {
     Surface::material(material);
     return *this;
+}
+
 }

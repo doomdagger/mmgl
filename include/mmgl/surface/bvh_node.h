@@ -13,6 +13,8 @@
 
 #include "mmgl/surface/surface.h"
 
+namespace mmgl {
+
 class BVHNode : public Surface {
 public:
     friend class Scene;
@@ -65,5 +67,6 @@ struct BBoxComparable {
     }
 };
 
+}
 
 #endif //RAYTRACER_BVH_NODE_H

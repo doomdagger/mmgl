@@ -8,6 +8,8 @@
 
 #include "mmgl/util/vector.h"
 
+namespace mmgl {
+
 class Material {
 public:
 
@@ -44,5 +46,7 @@ private:
     Vector _ki;
     float _r;
 };
+
+}
 
 #endif //RAYTRACER_MATERIAL_H

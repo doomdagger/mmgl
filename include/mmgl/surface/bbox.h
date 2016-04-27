@@ -16,6 +16,8 @@
 #define TOLERANCE 0.001f
 #define BOUNDING 0.002f
 
+namespace mmgl {
+
 class BBox {
 public:
     std::pair<bool, float> intersect(const Ray &ray, bool isNode) const;
@@ -41,5 +43,6 @@ private:
     Point _min, _max;
 };
 
+}
 
 #endif //RAYTRACER_BBOX_H

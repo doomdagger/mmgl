@@ -10,6 +10,8 @@
 #include "mmgl/light/light.h"
 #include "mmgl/util/point.h"
 
+namespace mmgl {
+
 class PointLight : public Light {
 public:
     PointLight(float x = 0, float y = 0, float z = 0,
@@ -34,5 +36,6 @@ private:
     Point _orig;
 };
 
+}
 
 #endif //RAYTRACER_POINTLIGHT_H

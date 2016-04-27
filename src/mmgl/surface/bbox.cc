@@ -5,6 +5,8 @@
 
 #include "mmgl/surface/bbox.h"
 
+namespace mmgl {
+
 std::pair<bool, float> BBox::intersect(const Ray &ray, bool isNode) const {
     std::pair<bool, float> ret{false, .0f};
     const Vector &ray_dir = ray._dir;
@@ -102,4 +104,6 @@ Vector BBox::normal(const Point &inter_p) const {
         ret._z = 1;
     }
     return std::move(ret);
+}
+
 }

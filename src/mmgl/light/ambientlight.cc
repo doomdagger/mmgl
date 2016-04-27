@@ -5,6 +5,8 @@
 
 #include "mmgl/light/ambientlight.h"
 
+namespace mmgl {
+
 AmbientLight &AmbientLight::in(const Vector &color) {
     Light::color(color);
     return *this;
@@ -13,4 +15,6 @@ AmbientLight &AmbientLight::in(const Vector &color) {
 AmbientLight &AmbientLight::in(float r, float g, float b) {
     Light::color(r, g, b);
     return *this;
+}
+
 }

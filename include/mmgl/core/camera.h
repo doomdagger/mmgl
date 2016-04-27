@@ -29,6 +29,8 @@
 #include "mmgl/light/arealight.h"
 #include "mmgl/util/scene_config.h"
 
+namespace mmgl {
+
 class Camera {
 public:
     friend class Scene;
@@ -79,5 +81,6 @@ private:
     Imf::Array2D<Imf::Rgba> _image;
 };
 
+}
 
 #endif //RAYTRACER_CAMERA_H

@@ -5,6 +5,8 @@
 
 #include "mmgl/surface/bvh_node.h"
 
+namespace mmgl {
+
 Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
                                   const std::vector<Surface *>::iterator &end) {
     if (begin == end) {
@@ -143,7 +145,8 @@ float BVHNode::compute_volume(const std::vector<Surface *>::const_iterator &begi
     return (x_max - x_min) * (y_max - y_min) * (z_max - z_min);
 }
 
-BVHNode::BVHNode(const std::vector<Surface *>::const_iterator &begin, const std::vector<Surface *>::const_iterator &end)
+BVHNode::BVHNode(const std::vector<Surface *>::const_iterator &begin,
+                 const std::vector<Surface *>::const_iterator &end)
         : _left{nullptr}, _right{nullptr} {
     float x_min, y_min, z_min, x_max, y_max, z_max;
     std::vector<Surface *>::const_iterator iter = begin;
@@ -163,4 +166,6 @@ BVHNode::BVHNode(const std::vector<Surface *>::const_iterator &begin, const std:
         z_max = std::max(temp.max().z(), z_max);
     }
     box(x_min, y_min, z_min, x_max, y_max, z_max);
+}
+
 }

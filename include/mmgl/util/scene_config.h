@@ -9,11 +9,14 @@
 
 #include "mmgl/util/common.h"
 
+namespace mmgl {
+
 class SceneConfig {
 public:
     friend class Scene;
 
-    SceneConfig() : _render_flag{Render::BVH}, _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5} { }
+    SceneConfig() : _render_flag{Render::BVH}, _pixel_sampling_num{2}, _shadow_sampling_num{2},
+                    _recursive_limit{5} { }
 
     const Render &render_flag() const {
         return _render_flag;
@@ -54,5 +57,6 @@ private:
     int _recursive_limit;
 };
 
+}
 
 #endif //RAYTRACER_SCENE_CONFIG_H

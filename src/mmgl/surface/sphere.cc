@@ -5,6 +5,8 @@
 
 #include "mmgl/surface/sphere.h"
 
+namespace mmgl {
+
 Sphere::Sphere(float x, float y, float z, float r) : _origin{x, y, z}, _radius{r} {
     init();
 }
@@ -94,4 +96,6 @@ Sphere &Sphere::radius(float radius) {
 Sphere &Sphere::made_of(const Material &material) {
     Surface::material(material);
     return *this;
+}
+
 }

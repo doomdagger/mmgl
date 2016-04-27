@@ -11,6 +11,8 @@
 #include "mmgl/light/light.h"
 #include "mmgl/util/common.h"
 
+namespace mmgl {
+
 class AreaLight : public Light {
 public:
     AreaLight(float x, float y, float z, float nx, float ny, float nz,
@@ -79,5 +81,6 @@ private:
     float _len;
 };
 
+}
 
 #endif //RAYTRACER_AREALIGHT_H

@@ -5,6 +5,8 @@
 
 #include "mmgl/surface/ray.h"
 
+namespace mmgl {
+
 Ray::Ray(const Point &point, const Vector &vector) : _origin{point}, _dir{vector}, _has_intersect{false},
                                                      _intersection{} { }
 
@@ -34,4 +36,6 @@ bool Ray::updatable(float t) const {
     } else {
         return t > EPS;
     }
+}
+
 }

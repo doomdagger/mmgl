@@ -24,7 +24,7 @@ public:
 private:
     // create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers
     static Surface *create_bvh_tree(const std::vector<Surface *>::iterator &begin,
-                                    const std::vector<Surface *>::iterator &end);
+                                    const std::vector<Surface *>::iterator &end, const BVH &bvh_mode);
 
     // helper function, compute volume
     static float compute_volume(const std::vector<Surface *>::const_iterator &begin,

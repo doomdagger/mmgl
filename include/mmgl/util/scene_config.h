@@ -15,8 +15,8 @@ class SceneConfig {
 public:
     friend class Scene;
 
-    SceneConfig() : _render_flag{Render::BVH}, _pixel_sampling_num{2}, _shadow_sampling_num{2},
-                    _recursive_limit{5} { }
+    SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
+                    _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5} { }
 
     const Render &render_flag() const {
         return _render_flag;
@@ -50,8 +50,18 @@ public:
         SceneConfig::_recursive_limit = recursive_limit;
     }
 
+
+    const BVH &bvh_mode() const {
+        return _bvh_mode;
+    }
+
+    void bvh_mode(const BVH &bvh_mode) {
+        _bvh_mode = bvh_mode;
+    }
+
 private:
     Render _render_flag;
+    BVH _bvh_mode;
     int _pixel_sampling_num;
     int _shadow_sampling_num;
     int _recursive_limit;

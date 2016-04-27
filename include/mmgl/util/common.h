@@ -22,6 +22,11 @@ enum class Render {
     BVH = 3
 };
 
+enum class BVH {
+    VOLUME_CUT = 0,
+    COUNT_CUT = 1
+};
+
 float get_token_as_float(std::string inString, int whichToken);
 
 void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);

@@ -240,7 +240,8 @@ void Scene::render() {
         std::clock_t beg = clock();
 
         // in case of we only have one object
-        if (!(parent = dynamic_cast<BVHNode *>(BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end())))) {
+        if (!(parent = dynamic_cast<BVHNode *>(
+                BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end(), config._bvh_mode)))) {
             parent = new BVHNode(objects_vec.begin(), objects_vec.end());
             parent->_left = objects_vec[0];
         }

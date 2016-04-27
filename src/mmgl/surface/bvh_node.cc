@@ -8,7 +8,7 @@
 namespace mmgl {
 
 Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
-                                  const std::vector<Surface *>::iterator &end) {
+                                  const std::vector<Surface *>::iterator &end, const BVH &bvh_mode) {
     if (begin == end) {
         return nullptr;
     } else if (begin + 1 == end) {
@@ -25,11 +25,18 @@ Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
             flag = BBoxComparable::CompareFlag::Z;
         }
         std::sort(begin, end, BBoxComparable{flag});
-        // volume based cut --- binary search
-        std::vector<Surface *>::iterator median = determine_cut(begin, end);
 
-        node->_left = create_bvh_tree(begin, median);
-        node->_right = create_bvh_tree(median, end);
+        std::vector<Surface *>::iterator median;
+        if (bvh_mode == BVH::VOLUME_CUT) {
+            // volume based cut --- binary search
+            median = determine_cut(begin, end);
+        } else {
+            // count based cut
+            median = begin + (end - begin) / 2;
+        }
+
+        node->_left = create_bvh_tree(begin, median, bvh_mode);
+        node->_right = create_bvh_tree(median, end, bvh_mode);
         return node;
     }
 }

@@ -61,6 +61,10 @@ public:
 
     int height() const;
 
+    inline const Image &image() const {
+        return _image;
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
 
 private:

@@ -9,12 +9,12 @@
 
 #include <iostream>
 #include <vector>
-#include <OpenEXR/ImfArray.h>
-#include <OpenEXR/ImfRgba.h>
+#include <ImfArray.h>
+#include <ImfRgba.h>
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
-#include <OpenEXR/ImfRgbaFile.h>
+#include <ImfRgbaFile.h>
 
 #include "util/point.h"
 #include "util/vector.h"

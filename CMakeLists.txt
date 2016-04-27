@@ -8,11 +8,11 @@ set(mmgl_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 include_directories(${mmgl_INCLUDE_DIR})
 include_directories("/usr/local/include/OpenEXR")
 
-file(GLOB_RECURSE srcs ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB_RECURSE hdrs ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE srcs ${PROJECT_SOURCE_DIR}/src/mmgl/*.cc)
+file(GLOB_RECURSE hdrs ${PROJECT_SOURCE_DIR}/include/mmgl/*.h)
 
-add_library(mmgl SHARED ${srcs} ${hdrs})
+add_library(mmgl ${srcs} ${hdrs})
 
 # ---[ Install
-install(DIRECTORY ${mmgl_INCLUDE_DIR} DESTINATION include/mmgl)
+install(DIRECTORY ${mmgl_INCLUDE_DIR}/mmgl DESTINATION include)
 install(TARGETS mmgl EXPORT mmgl DESTINATION lib)

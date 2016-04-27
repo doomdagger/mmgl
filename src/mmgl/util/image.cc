@@ -17,7 +17,7 @@ void Image::resize(int width, int height) {
         return;
     }
 
-    _image.empty();
+    _image.clear();
     for (int i = 0; i < height; ++i) {
         std::vector<Vector> row;
         for (int j = 0; j < width; ++j) {

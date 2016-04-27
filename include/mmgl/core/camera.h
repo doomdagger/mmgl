@@ -9,12 +9,9 @@
 
 #include <iostream>
 #include <vector>
-#include <ImfArray.h>
-#include <ImfRgba.h>
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
-#include <ImfRgbaFile.h>
 
 #include "mmgl/util/point.h"
 #include "mmgl/util/vector.h"
@@ -28,6 +25,7 @@
 #include "mmgl/surface/bvh_node.h"
 #include "mmgl/light/arealight.h"
 #include "mmgl/util/scene_config.h"
+#include "mmgl/util/image.h"
 
 namespace mmgl {
 
@@ -59,8 +57,6 @@ public:
 
     void writeRgba(const std::string &) const;
 
-    const Imf::Rgba *image() const;
-
     int width() const;
 
     int height() const;
@@ -78,7 +74,7 @@ private:
     int _nx;
     int _ny;
     float _l, _r, _t, _b;
-    Imf::Array2D<Imf::Rgba> _image;
+    Image _image;
 };
 
 }

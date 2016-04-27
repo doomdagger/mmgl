@@ -46,7 +46,7 @@ void Camera::config(float x, float y, float z, float d, float dx, float dy, floa
 
     _l = -iw / 2, _r = iw / 2, _t = ih / 2, _b = -ih / 2;
 
-    _image.resizeErase(ny, nx);
+    _image.resize(nx, ny);
 }
 
 std::ostream &operator<<(std::ostream &os, const Camera &camera) {
@@ -215,15 +215,11 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
 
     for (int y = 0; y < _ny; ++y) {
         for (int x = 0; x < _nx; ++x) {
-            Imf::Rgba &rgba = _image[y][x];
-
+            // compute rgb for the pixel
             Vector rgb = render_pixel(x, y, objects, lights, parent, sceneConfig);
-
             rgb /= sampling_num_pow2;
-            rgba.r = rgb.x();
-            rgba.g = rgb.y();
-            rgba.b = rgb.z();
-            rgba.a = 1;
+            // write rgb value to image
+            _image.pixel(x, y, rgb);
         }
     }
 }
@@ -253,10 +249,6 @@ Vector Camera::render_pixel(int x, int y, const std::vector<Surface *> &objects,
     return std::move(rgb);
 }
 
-const Imf::Rgba *Camera::image() const {
-    return &_image[0][0];
-}
-
 int Camera::width() const {
     return _nx;
 }
@@ -266,16 +258,7 @@ int Camera::height() const {
 }
 
 void Camera::writeRgba(const std::string &fileName) const {
-    //
-    // Write an RGBA image using class RgbaOutputFile.
-    //
-    //	- open the file
-    //	- describe the memory layout of the pixels
-    //	- store the pixels in the file
-    //
-    Imf::RgbaOutputFile file(fileName.c_str(), _nx, _ny, Imf::WRITE_RGBA);
-    file.setFrameBuffer(image(), 1, static_cast<size_t >(_nx));
-    file.writePixels(_ny);
+    _image.save(fileName);
 }
 
 }

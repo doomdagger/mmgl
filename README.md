@@ -19,7 +19,7 @@ $ mkdir build
 # change directory to build folder
 $ cd build
 
-$ execute cmake, attention: two points here
+# execute cmake, attention: two points here
 $ cmake ..
 
 # execute make

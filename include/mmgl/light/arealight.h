@@ -27,6 +27,10 @@ public:
         init();
     }
 
+    AreaLight(const AreaLight &light) : Light(light.color()), _orig(light.orig()), _norm(light.norm()), _u(light.u()), _len(light.len()) {
+        init();
+    }
+
     std::vector<Point> sample(int sampling_num, const std::function<float()> &rand_float);
 
     AreaLight &in(const Vector &color);

@@ -6,8 +6,8 @@
 #ifndef RAYTRACER_SCENE_H
 #define RAYTRACER_SCENE_H
 
+#include <memory>
 #include <vector>
-#include <queue>
 
 #include "mmgl/util/common.h"
 #include "mmgl/surface/surface.h"
@@ -36,30 +36,36 @@ public:
 
     void save(const std::string &file_path) const;
 
-    Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = .0f,
-                   const Material &material = Material{});
+    Scene &add(const Sphere &sphere);
+    Scene &add(const Triangle &triangle);
+    Scene &add(const PointLight &point_light);
+    Scene &add(const AreaLight &area_light);
+    Scene &add(const AmbientLight &ambient_light);
 
-    Triangle &triangle(float x1 = .0f, float y1 = .0f, float z1 = .0f,
-                       float x2 = .0f, float y2 = .0f, float z2 = .0f,
-                       float x3 = .0f, float y3 = .0f, float z3 = .0f,
-                       const Material &material = Material{});
+    // Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = .0f,
+    //                const Material &material = Material{});
 
-    PointLight &pointLight(float x = .0f, float y = .0f, float z = .0f,
-                           float r = .0f, float g = .0f, float b = .0f);
+    // Triangle &triangle(float x1 = .0f, float y1 = .0f, float z1 = .0f,
+    //                    float x2 = .0f, float y2 = .0f, float z2 = .0f,
+    //                    float x3 = .0f, float y3 = .0f, float z3 = .0f,
+    //                    const Material &material = Material{});
 
-    AreaLight &areaLight(float x = .0f, float y = .0f, float z = .0f, float nx = .0f, float ny = .0f, float nz = .0f,
-                         float ux = .0f, float uy = .0f, float uz = .0f, float len = .0f, float r = .0f, float g = .0f,
-                         float b = .0f);
+    // PointLight &pointLight(float x = .0f, float y = .0f, float z = .0f,
+    //                        float r = .0f, float g = .0f, float b = .0f);
 
-    AmbientLight &ambientLight(float r = .0f, float g = .0f, float b = .0f);
+    // AreaLight &areaLight(float x = .0f, float y = .0f, float z = .0f, float nx = .0f, float ny = .0f, float nz = .0f,
+    //                      float ux = .0f, float uy = .0f, float uz = .0f, float len = .0f, float r = .0f, float g = .0f,
+    //                      float b = .0f);
+
+    // AmbientLight &ambientLight(float r = .0f, float g = .0f, float b = .0f);
 
     ~Scene();
 
     // public member field config for easy access
     SceneConfig config;
 private:
-    std::vector<Surface *> _surfaces;
-    std::vector<Light *> _lights;
+    std::vector<std::unique_ptr<Surface>> _surfaces;
+    std::vector<std::unique_ptr<Light>> _lights;
 
     Camera _camera;
 };  // class Scene

@@ -7,9 +7,12 @@
 #define RAYTRACER_BVH_NODE_H
 
 
-#include <vector>
 #include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <vector>
 #include <limits>
+#include <memory>
 
 #include "mmgl/surface/surface.h"
 
@@ -21,31 +24,37 @@ public:
 
     friend class Camera;
 
+    virtual BVHNode *clone() const {
+        // this is never used
+        assert(false);
+        return nullptr;
+    }
+
 private:
     // create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers
-    static Surface *create_bvh_tree(const std::vector<Surface *>::iterator &begin,
-                                    const std::vector<Surface *>::iterator &end, const BVH &bvh_mode);
+    static std::unique_ptr<Surface> create_bvh_tree(const std::vector<std::unique_ptr<Surface>>::iterator &begin,
+                                                    const std::vector<std::unique_ptr<Surface>>::iterator &end, const BVH &bvh_mode);
 
     // helper function, compute volume
-    static float compute_volume(const std::vector<Surface *>::const_iterator &begin,
-                                const std::vector<Surface *>::const_iterator &end);
+    static float compute_volume(const std::vector<std::unique_ptr<Surface>>::const_iterator &begin,
+                                const std::vector<std::unique_ptr<Surface>>::const_iterator &end);
 
     // helper function, determine cut position
-    static const std::vector<Surface *>::iterator determine_cut(const std::vector<Surface *>::iterator &begin,
-                                                                const std::vector<Surface *>::iterator &end);
+    static const std::vector<std::unique_ptr<Surface>>::iterator determine_cut(const std::vector<std::unique_ptr<Surface>>::iterator &begin,
+                                                                               const std::vector<std::unique_ptr<Surface>>::iterator &end);
 
     // intersect function, from parent node to all its leaves
-    static void intersect(Ray &ray, const BVHNode *const parent, const Surface *const surface, const Render &flag);
+    static void intersect(Ray &ray, const BVHNode *const parent, const uintptr_t surface, const Render &flag);
 
-    BVHNode(const std::vector<Surface *>::const_iterator &begin,
-            const std::vector<Surface *>::const_iterator &end);
+    BVHNode(const std::vector<std::unique_ptr<Surface>>::const_iterator &begin,
+            const std::vector<std::unique_ptr<Surface>>::const_iterator &end);
 
     bool intersect(Ray &, const Render &) const;
 
     std::string to_string() const;
 
-    Surface *_left;
-    Surface *_right;
+    std::unique_ptr<Surface> _left;
+    std::unique_ptr<Surface> _right;
 };
 
 struct BBoxComparable {
@@ -56,7 +65,7 @@ struct BBoxComparable {
 
     BBoxComparable(const CompareFlag &f = CompareFlag::X) : _flag{f} { }
 
-    bool operator()(const Surface *l, const Surface *r) {
+    bool operator()(const std::unique_ptr<Surface> &l, const std::unique_ptr<Surface> &r) {
         if (_flag == CompareFlag::X) {
             return l->box().min().x() < r->box().min().x();
         } else if (_flag == CompareFlag::Y) {

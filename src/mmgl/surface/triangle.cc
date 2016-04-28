@@ -9,12 +9,20 @@ namespace mmgl {
 
 Triangle::Triangle(float x1, float y1, float z1,
                    float x2, float y2, float z2,
-                   float x3, float y3, float z3) : _p1{x1, y1, z1}, _p2{x2, y2, z2}, _p3{x3, y3, z3} {
+                   float x3, float y3, float z3,
+                   const Material &material) : _p1{x1, y1, z1}, _p2{x2, y2, z2}, _p3{x3, y3, z3} {
     init();
+    this->material(material);
 }
 
-Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3) : _p1{p1}, _p2{p2}, _p3{p3} {
+Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3, const Material &material) : _p1{p1}, _p2{p2}, _p3{p3} {
     init();
+    this->material(material);
+}
+
+Triangle::Triangle(const Triangle &triangle) : _p1{triangle.p1()}, _p2{triangle.p2()}, _p3{triangle.p3()} {
+    init();
+    this->material(triangle.material());
 }
 
 bool Triangle::intersect(Ray &ray, const Render &flag) const {
@@ -26,7 +34,7 @@ bool Triangle::intersect(Ray &ray, const Render &flag) const {
         if (ray.updatable(box_hit.second)) {
             Point inter_p = ray._origin + ray._dir * box_hit.second;
             Vector norm = box_normal(inter_p);
-            ray.intersection(Intersection(box_hit.second, inter_p, norm, this));
+            ray.intersection(Intersection(box_hit.second, inter_p, norm, reinterpret_cast<uintptr_t>(this)));
         }
         return true;
     }
@@ -66,7 +74,7 @@ bool Triangle::intersect(Ray &ray, const Render &flag) const {
     if (ray.updatable(t)) {
         // if we survive here, compute the intersection point
         Point inter_p = ray._origin + ray._dir * t;
-        ray.intersection(Intersection{t, inter_p, _norm, this});
+        ray.intersection(Intersection{t, inter_p, _norm, reinterpret_cast<uintptr_t>(this)});
     }
     return true;
 }

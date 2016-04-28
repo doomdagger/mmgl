@@ -5,14 +5,23 @@
 
 #include "mmgl/surface/sphere.h"
 
+#include <cstdint>
+
 namespace mmgl {
 
-Sphere::Sphere(float x, float y, float z, float r) : _origin{x, y, z}, _radius{r} {
+Sphere::Sphere(float x, float y, float z, float r, const Material &material) : _origin{x, y, z}, _radius{r} {
     init();
+    this->material(material);
 }
 
-Sphere::Sphere(const Point &origin, float radius) : _origin{origin}, _radius{radius} {
+Sphere::Sphere(const Point &origin, float radius, const Material &material) : _origin{origin}, _radius{radius} {
     init();
+    this->material(material);
+}
+
+Sphere::Sphere(const Sphere &sphere) : _origin{sphere.origin()}, _radius{sphere.radius()} {
+    init();
+    this->material(sphere.material());
 }
 
 bool Sphere::intersect(Ray &ray, const Render &flag) const {
@@ -24,7 +33,7 @@ bool Sphere::intersect(Ray &ray, const Render &flag) const {
         if (ray.updatable(box_hit.second)) {
             Point inter_p = ray._origin + ray._dir * box_hit.second;
             Vector norm = box_normal(inter_p);
-            ray.intersection(Intersection(box_hit.second, inter_p, norm, this));
+            ray.intersection(Intersection(box_hit.second, inter_p, norm, reinterpret_cast<uintptr_t>(this)));
         }
         return true;
     }
@@ -55,7 +64,7 @@ bool Sphere::intersect(Ray &ray, const Render &flag) const {
             Point inter_p = ray._origin + ray._dir * t;
             Vector norm = inter_p - _origin;
             norm.normalize();
-            ray.intersection(Intersection(t, inter_p, norm, this));
+            ray.intersection(Intersection(t, inter_p, norm, reinterpret_cast<uintptr_t>(this)));
         }
         return true;
     } else {

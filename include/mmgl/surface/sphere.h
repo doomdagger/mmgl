@@ -8,6 +8,7 @@
 
 
 #include <iostream>
+#include <memory>
 #include <sstream>
 
 #include "mmgl/surface/surface.h"
@@ -17,15 +18,17 @@ namespace mmgl {
 
 class Sphere : public Surface {
 public:
-    Sphere(float x = 0, float y = 0, float z = 0, float r = 0);
+    Sphere(float x = 0, float y = 0, float z = 0, float r = 0, const Material &material = Material{});
 
-    Sphere(const Point &origin, float radius);
+    Sphere(const Point &origin, float radius, const Material &material = Material{});
 
-    bool intersect(Ray &, const Render &) const;
+    Sphere(const Sphere &sphere);
 
-    std::string to_string() const;
+    virtual Sphere *clone() const {
+        return {new Sphere(*this)};
+    }
 
-    inline const Point &origin() const {
+    inline const Point origin() const {
         return _origin;
     }
 
@@ -40,6 +43,10 @@ public:
     Sphere &radius(float radius);
 
     Sphere &made_of(const Material &material);
+
+    bool intersect(Ray &, const Render &) const;
+
+    std::string to_string() const;
 
 private:
     void init() {

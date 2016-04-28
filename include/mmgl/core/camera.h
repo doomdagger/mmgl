@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include <memory>
 
 #include "mmgl/util/point.h"
 #include "mmgl/util/vector.h"
@@ -39,27 +40,27 @@ public:
 
     Ray project_pixel(float i, float j);
 
-    void render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                const BVHNode *const parent, const SceneConfig &sceneConfig);
+    void render(const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig);
 
     void render_partition(const size_t partition_id, const size_t partition_size,
-                          const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                          const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2);
+                          const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                          const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig);
 
     // add this function for multithreading
-    Vector render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                        const BVHNode *const parent, const SceneConfig &sceneConfig,
+    Vector render_pixel(int x, int y, const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                        const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig,
                         const std::function<float()> &rand_float);
 
-    Vector L(Ray &ray, int recursive_limit, const Surface *const object_id,
-             const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-             const BVHNode *const parent, const Render &flag, int s_sampling_nu,
+    Vector L(Ray &ray, int recursive_limit, const uintptr_t object_id,
+             const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+             const std::unique_ptr<BVHNode> &parent, const Render &flag, int s_sampling_nu,
              const std::function<float()> &rand_float);
 
     std::pair<bool, Vector> blinn_phong(const Ray &pri_ray, const Point &light_pt, const Vector &light_cl,
                                         const Intersection &intersection,
-                                        const Material &material, const std::vector<Surface *> &objects,
-                                        const BVHNode *const parent,
+                                        const Material &material, const std::vector<std::unique_ptr<Surface>> &objects,
+                                        const std::unique_ptr<BVHNode> &parent,
                                         const Render &flag);
 
     void writeRgba(const std::string &) const;

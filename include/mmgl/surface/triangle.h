@@ -18,13 +18,20 @@ class Triangle : public Surface {
 public:
     Triangle(float x1 = 0, float y1 = 0, float z1 = 0,
              float x2 = 0, float y2 = 0, float z2 = 0,
-             float x3 = 0, float y3 = 0, float z3 = 0);
+             float x3 = 0, float y3 = 0, float z3 = 0,
+             const Material &material = Material{});
 
-    Triangle(const Point &p1, const Point &p2, const Point &p3);
+    Triangle(const Point &p1, const Point &p2, const Point &p3, const Material &material = Material{});
 
-    bool intersect(Ray &, const Render &) const;
+    Triangle(const Triangle &triangle);
 
-    std::string to_string() const;
+    virtual Triangle *clone() const {
+        return {new Triangle(*this)};
+    }
+
+    inline Point p1() const { return _p1; }
+    inline Point p2() const { return _p2; }
+    inline Point p3() const { return _p3; }
 
     Triangle &point_one(const Point &p1);
 
@@ -39,6 +46,10 @@ public:
     Triangle &point_three(float x, float y, float z);
 
     Triangle &made_of(const Material &material);
+
+    bool intersect(Ray &, const Render &) const;
+
+    std::string to_string() const;
 
 private:
     void init() {

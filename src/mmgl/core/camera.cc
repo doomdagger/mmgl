@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <random>
@@ -79,8 +80,8 @@ std::ostream &operator<<(std::ostream &os, const Camera &camera) {
 
 std::pair<bool, Vector> Camera::blinn_phong(const Ray &pri_ray, const Point &light_pt, const Vector &light_cl,
                                             const Intersection &intersection,
-                                            const Material &material, const std::vector<Surface *> &objects,
-                                            const BVHNode *const parent,
+                                            const Material &material, const std::vector<std::unique_ptr<Surface>> &objects,
+                                            const std::unique_ptr<BVHNode> &parent,
                                             const Render &flag) {
     std::pair<bool, Vector> ret(false, Vector());
 
@@ -95,12 +96,12 @@ std::pair<bool, Vector> Camera::blinn_phong(const Ray &pri_ray, const Point &lig
     // render flag
     if (flag == Render::NORMAL || flag == Render::BBOX_ONLY) {
         for (int j = 0; j < obj_size; ++j) {
-            if (objects[j] != intersection.id()) {
+            if (reinterpret_cast<uintptr_t>(objects[j].get()) != intersection.id()) {
                 objects[j]->intersect(shadowRay, flag);
             }
         }
     } else {
-        BVHNode::intersect(shadowRay, parent, intersection.id(), flag);
+        BVHNode::intersect(shadowRay, parent.get(), intersection.id(), flag);
     }
 
     if (!shadowRay.has_block(interMagnitude)) {
@@ -120,9 +121,9 @@ std::pair<bool, Vector> Camera::blinn_phong(const Ray &pri_ray, const Point &lig
     return std::move(ret);
 }
 
-Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
-                 const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                 const BVHNode *const parent, const Render &flag, int s_sampling_num,
+Vector Camera::L(Ray &ray, int recursive_limit, const uintptr_t object_id,
+                 const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                 const std::unique_ptr<BVHNode> &parent, const Render &flag, int s_sampling_num,
                  const std::function<float()> &rand_float) {
     static float inv_s_sampling_num_pow2 = 1.0f / (s_sampling_num * s_sampling_num);
     if (recursive_limit == 0)
@@ -132,9 +133,9 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
     int obj_size = static_cast<int>(objects.size());
     if (flag == Render::NORMAL || flag == Render::BBOX_ONLY) {
         // I have to write like this, more redundant code to avoid useless checks in for loop
-        if (object_id) {
+        if (object_id == reinterpret_cast<uintptr_t>(nullptr)) {
             for (int i = 0; i < obj_size; ++i) {
-                if (objects[i] != object_id) {
+                if (reinterpret_cast<uintptr_t>(objects[i].get()) != object_id) {
                     objects[i]->intersect(ray, flag);
                 }
             }
@@ -144,7 +145,7 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
             }
         }
     } else {
-        BVHNode::intersect(ray, parent, object_id, flag);
+        BVHNode::intersect(ray, parent.get(), object_id, flag);
     }
 
     // no intersection, return empty vector
@@ -155,17 +156,17 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
     Vector rgb;
     // get intersection, object, material
     const Intersection &intersection = ray.intersection();
-    const Surface &surface = *intersection.id();
+    const Surface &surface = *(reinterpret_cast<Surface *>(intersection.id()));
     const Material &material = surface.material();
     // iterate over all lights, use iterator
     for (auto &light_ptr : lights) {
-        if (PointLight *pointLight = dynamic_cast<PointLight *>(light_ptr)) {  // For point light
+        if (PointLight *pointLight = dynamic_cast<PointLight *>(light_ptr.get())) {  // For point light
             // compute shading
             rgb += blinn_phong(ray, pointLight->orig(), pointLight->color(), intersection, material, objects, parent,
                                flag).second;
-        } else if (AmbientLight *ambientLight = dynamic_cast<AmbientLight *>(light_ptr)) {  // for ambient light
+        } else if (AmbientLight *ambientLight = dynamic_cast<AmbientLight *>(light_ptr.get())) {  // for ambient light
             rgb += material.kd() * ambientLight->color();
-        } else if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light_ptr)) {    // for square area light
+        } else if (AreaLight *areaLight = dynamic_cast<AreaLight *>(light_ptr.get())) {    // for square area light
             Vector sub_rgb;
             if (s_sampling_num == 1) {
                 // compute shading
@@ -218,9 +219,8 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
     }
 }
 
-void Camera::render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                    const BVHNode *const parent, const SceneConfig &sceneConfig) {
-    const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
+void Camera::render(const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                    const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig) {
     const size_t partition_num {sceneConfig.partition_num()};
     const size_t partition_size {(_nx * _ny + partition_num - 1) / partition_num};
     thread_pool pool(sceneConfig.thread_num());
@@ -229,8 +229,7 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
     std::vector<std::future<void>> futures(partition_num);
     for (size_t i {0}; i < partition_num; ++i) {
         futures[i] = pool.submit(bind(&Camera::render_partition, this, i, partition_size,
-                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig),
-                                      sampling_num_pow2));
+                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig)));
     }
     for (auto &f : futures) {
         f.get();
@@ -238,8 +237,9 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
 }
 
 void Camera::render_partition(const size_t partition_id, const size_t partition_size,
-                              const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                              const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2) {
+                              const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                              const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig) {
+    const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_real_distribution<float> distribution(0.0, 1.0);
@@ -256,21 +256,21 @@ void Camera::render_partition(const size_t partition_id, const size_t partition_
     }
 }
 
-Vector Camera::render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                            const BVHNode *const parent, const SceneConfig &sceneConfig,
+Vector Camera::render_pixel(int x, int y, const std::vector<std::unique_ptr<Surface>> &objects, const std::vector<std::unique_ptr<Light>> &lights,
+                            const std::unique_ptr<BVHNode> &parent, const SceneConfig &sceneConfig,
                             const std::function<float()> &rand_float) {
     Vector rgb;
 
     if (sceneConfig.pixel_sampling_num() == 1) {
         Ray ray = project_pixel(x, y);
-        rgb += L(ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent, sceneConfig.render_flag(),
+        rgb += L(ray, sceneConfig.recursive_limit(), reinterpret_cast<uintptr_t>(nullptr), objects, lights, parent, sceneConfig.render_flag(),
                  sceneConfig.shadow_sampling_num(), rand_float);
     } else {
         for (int p = 0; p < sceneConfig.pixel_sampling_num(); p++) {
             for (int q = 0; q < sceneConfig.pixel_sampling_num(); q++) {
                 Ray sampling_ray = project_pixel(x + (p + rand_float()) / sceneConfig.pixel_sampling_num(),
                                                  y + (q + rand_float()) / sceneConfig.pixel_sampling_num());
-                rgb += L(sampling_ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent,
+                rgb += L(sampling_ray, sceneConfig.recursive_limit(), reinterpret_cast<uintptr_t>(nullptr), objects, lights, parent,
                          sceneConfig.render_flag(), sceneConfig.shadow_sampling_num(), rand_float);
             }
         }

@@ -13,9 +13,11 @@ namespace mmgl {
 
 class AmbientLight : public Light {
 public:
-    AmbientLight(float r, float g, float b) : Light{r, g, b} { }
+    AmbientLight(float r = 0, float g = 0, float b = 0) : Light{r, g, b} { }
 
     AmbientLight(const Vector &rgb) : Light{rgb} { }
+
+    AmbientLight(const AmbientLight &light) : Light{light.color()} { }
 
     AmbientLight &in(const Vector &color);
 

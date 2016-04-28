@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <queue>
+#include <chrono>
 
 #include "mmgl/util/common.h"
 #include "mmgl/surface/surface.h"
@@ -36,22 +37,22 @@ public:
 
     void save(const std::string &file_path) const;
 
-    Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = .0f,
+    Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = 1.0f,
                    const Material &material = Material{});
 
-    Triangle &triangle(float x1 = .0f, float y1 = .0f, float z1 = .0f,
-                       float x2 = .0f, float y2 = .0f, float z2 = .0f,
-                       float x3 = .0f, float y3 = .0f, float z3 = .0f,
+    Triangle &triangle(float x1 = 1.0f, float y1 = .0f, float z1 = .0f,
+                       float x2 = .0f, float y2 = 1.0f, float z2 = .0f,
+                       float x3 = .0f, float y3 = .0f, float z3 = 1.0f,
                        const Material &material = Material{});
 
-    PointLight &pointLight(float x = .0f, float y = .0f, float z = .0f,
-                           float r = .0f, float g = .0f, float b = .0f);
+    PointLight &pointLight(float x = 100.0f, float y = 100.0f, float z = 100.0f,
+                           float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
-    AreaLight &areaLight(float x = .0f, float y = .0f, float z = .0f, float nx = .0f, float ny = .0f, float nz = .0f,
-                         float ux = .0f, float uy = .0f, float uz = .0f, float len = .0f, float r = .0f, float g = .0f,
-                         float b = .0f);
+    AreaLight &areaLight(float x = 100.0f, float y = 100.0f, float z = 100.0f, float nx = .0f, float ny = -1.0f, float nz = .0f,
+                         float ux = 1.0f, float uy = .0f, float uz = .0f, float len = 2.0f, float r = 3000.0f, float g = 3000.0f,
+                         float b = 3000.0f);
 
-    AmbientLight &ambientLight(float r = .0f, float g = .0f, float b = .0f);
+    AmbientLight &ambientLight(float r = .03f, float g = .03f, float b = .03f);
 
     ~Scene();
 

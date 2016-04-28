@@ -5,15 +5,6 @@
 
 #include "mmgl/core/camera.h"
 
-#include <algorithm>
-#include <chrono>
-#include <functional>
-#include <future>
-#include <random>
-#include <utility>
-#include <vector>
-
-#include "mmgl/util/thread_pool.h"
 
 namespace mmgl {
 
@@ -240,7 +231,7 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
 void Camera::render_partition(const size_t partition_id, const size_t partition_size,
                               const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                               const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2) {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_real_distribution<float> distribution(0.0, 1.0);
     std::function<float()> rand_float = bind(distribution, generator);
@@ -289,6 +280,44 @@ int Camera::height() const {
 
 void Camera::writeRgba(const std::string &fileName) const {
     _image.save(fileName);
+}
+
+Camera &Camera::at(float x, float y, float z) {
+    _eye.x(x), _eye.y(y), _eye.z(z);
+    return *this;
+}
+
+Camera &Camera::focal_length(float d) {
+    _d = d;
+    return *this;
+}
+
+Camera &Camera::facing(float dx, float dy, float dz) {
+    Vector d_dir{dx, dy, dz};
+
+    _u = d_dir.cross(Vector{0, 1, 0});
+    _v = _u.cross(d_dir);
+    _w = d_dir * -1;
+
+    _u.normalize();
+    _v.normalize();
+    _w.normalize();
+
+    return *this;
+}
+
+Camera &Camera::view_range(float iw, float ih) {
+    _l = -iw / 2, _r = iw / 2, _t = ih / 2, _b = -ih / 2;
+
+    return *this;
+}
+
+Camera &Camera::image_size(int nx, int ny) {
+    _nx = nx;
+    _ny = ny;
+
+    _image.resize(nx, ny);
+    return *this;
 }
 
 }

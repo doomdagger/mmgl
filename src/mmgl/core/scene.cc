@@ -5,8 +5,6 @@
 
 #include "mmgl/core/scene.h"
 
-#include <chrono>
-
 namespace mmgl {
 
 Scene::Scene(const std::string &scene_file) {

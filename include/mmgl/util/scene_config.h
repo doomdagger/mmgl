@@ -21,61 +21,67 @@ public:
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},
                     _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000} { }
 
-    size_t thread_num() const {
+    unsigned thread_num() const {
         return _thread_num;
     }
 
-    void thread_num(int thread_num) {
-        SceneConfig::_thread_num = thread_num;
+    SceneConfig &thread_num(unsigned thread_num) {
+        _thread_num = thread_num;
+        return *this;
     }
 
-    size_t partition_num() const {
+    unsigned partition_num() const {
         return _partition_num;
     }
 
-    void partition_num(int partition_num) {
-        SceneConfig::_partition_num = std::min(static_cast<size_t>(partition_num),
-                                               static_cast<size_t>(std::thread::hardware_concurrency()));
+    SceneConfig &partition_num(unsigned partition_num) {
+        _partition_num = std::min(partition_num, std::thread::hardware_concurrency());
+        return *this;
     }
 
     const Render &render_flag() const {
         return _render_flag;
     }
 
-    void render_flag(const Render &render_flag) {
-        SceneConfig::_render_flag = render_flag;
+    SceneConfig &render_flag(const Render &render_flag) {
+        _render_flag = render_flag;
+        return *this;
     }
 
     int pixel_sampling_num() const {
         return _pixel_sampling_num;
     }
 
-    void pixel_sampling_num(int pixel_sampling_num) {
-        SceneConfig::_pixel_sampling_num = pixel_sampling_num;
+    SceneConfig &pixel_sampling_num(int pixel_sampling_num) {
+        _pixel_sampling_num = pixel_sampling_num;
+        return *this;
     }
 
     int shadow_sampling_num() const {
         return _shadow_sampling_num;
     }
 
-    void shadow_sampling_num(int shadow_sampling_num) {
-        SceneConfig::_shadow_sampling_num = shadow_sampling_num;
+    SceneConfig &shadow_sampling_num(int shadow_sampling_num) {
+        _shadow_sampling_num = shadow_sampling_num;
+        return *this;
     }
 
     int recursive_limit() const {
         return _recursive_limit;
     }
 
-    void recursive_limit(int recursive_limit) {
-        SceneConfig::_recursive_limit = recursive_limit;
+    SceneConfig &recursive_limit(int recursive_limit) {
+        _recursive_limit = recursive_limit;
+        return *this;
     }
 
     const BVH &bvh_mode() const {
         return _bvh_mode;
     }
 
-    void bvh_mode(const BVH &bvh_mode) {
+    SceneConfig &bvh_mode(const BVH &bvh_mode) {
         _bvh_mode = bvh_mode;
+        return *this;
     }
 
 private:
@@ -84,8 +90,8 @@ private:
     int _pixel_sampling_num;
     int _shadow_sampling_num;
     int _recursive_limit;
-    size_t _thread_num;
-    size_t _partition_num;
+    unsigned _thread_num;
+    unsigned _partition_num;
 };
 
 }

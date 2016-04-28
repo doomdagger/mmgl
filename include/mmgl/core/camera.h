@@ -9,9 +9,16 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <chrono>
+#include <functional>
+#include <random>
+#include <utility>
+#include <vector>
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
+#include <future>
 #include <functional>
 
 #include "mmgl/util/point.h"
@@ -27,6 +34,7 @@
 #include "mmgl/light/arealight.h"
 #include "mmgl/util/scene_config.h"
 #include "mmgl/util/image.h"
+#include "mmgl/util/thread_pool.h"
 
 namespace mmgl {
 
@@ -38,6 +46,16 @@ public:
                 int nx, int ny, float iw, float ih);
 
     Ray project_pixel(float i, float j);
+
+    Camera &at(float x, float y, float z);
+
+    Camera &focal_length(float d);
+
+    Camera &facing(float dx, float dy, float dz);
+
+    Camera &view_range(float iw, float ih);
+
+    Camera &image_size(int nx, int ny);
 
     void render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                 const BVHNode *const parent, const SceneConfig &sceneConfig);

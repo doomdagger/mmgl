@@ -114,8 +114,8 @@ void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector
     in.close();
 }
 
-float rand_float() {
-    return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-}
+// float rand_float() {
+//     return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+// }
 
 }

@@ -6,6 +6,8 @@
 #ifndef RAYTRACER_SCENE_CONFIG_H
 #define RAYTRACER_SCENE_CONFIG_H
 
+#include <algorithm>
+#include <thread>
 
 #include "mmgl/util/common.h"
 
@@ -16,7 +18,25 @@ public:
     friend class Scene;
 
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
-                    _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5} { }
+                    _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},
+                    _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000} { }
+
+    size_t thread_num() const {
+        return _thread_num;
+    }
+
+    void thread_num(int thread_num) {
+        SceneConfig::_thread_num = thread_num;
+    }
+
+    size_t partition_num() const {
+        return _partition_num;
+    }
+
+    void partition_num(int partition_num) {
+        SceneConfig::_partition_num = std::min(static_cast<size_t>(partition_num),
+                                               static_cast<size_t>(std::thread::hardware_concurrency()));
+    }
 
     const Render &render_flag() const {
         return _render_flag;
@@ -50,7 +70,6 @@ public:
         SceneConfig::_recursive_limit = recursive_limit;
     }
 
-
     const BVH &bvh_mode() const {
         return _bvh_mode;
     }
@@ -65,6 +84,8 @@ private:
     int _pixel_sampling_num;
     int _shadow_sampling_num;
     int _recursive_limit;
+    size_t _thread_num;
+    size_t _partition_num;
 };
 
 }

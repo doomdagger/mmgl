@@ -5,6 +5,16 @@
 
 #include "mmgl/core/camera.h"
 
+#include <algorithm>
+#include <chrono>
+#include <functional>
+#include <future>
+#include <random>
+#include <utility>
+#include <vector>
+
+#include "mmgl/util/thread_pool.h"
+
 namespace mmgl {
 
 /**
@@ -112,7 +122,8 @@ std::pair<bool, Vector> Camera::blinn_phong(const Ray &pri_ray, const Point &lig
 
 Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
                  const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                 const BVHNode *const parent, const Render &flag, int s_sampling_num) {
+                 const BVHNode *const parent, const Render &flag, int s_sampling_num,
+                 const std::function<float()> &rand_float) {
     static float inv_s_sampling_num_pow2 = 1.0f / (s_sampling_num * s_sampling_num);
     if (recursive_limit == 0)
         return std::move(Vector{0.0f, 0.0f, 0.0f});
@@ -171,7 +182,7 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
                     sub_rgb += temp.second * (a_scalar > 0 ? a_scalar : 0);
                 }
             } else {
-                for (Point &sample_p : areaLight->sample(s_sampling_num)) {
+                for (Point &sample_p : areaLight->sample(s_sampling_num, rand_float)) {
                     std::pair<bool, Vector> temp = blinn_phong(ray, sample_p, areaLight->color(), intersection,
                                                                material, objects, parent, flag);
                     if (temp.first) {
@@ -200,7 +211,7 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
         Ray refRay{intersection.point(), refRayDir};
         // recursively compute it
         rgb += material.ki() *
-               L(refRay, recursive_limit - 1, intersection.id(), objects, lights, parent, flag, s_sampling_num);
+               L(refRay, recursive_limit - 1, intersection.id(), objects, lights, parent, flag, s_sampling_num, rand_float);
         return std::move(rgb);
     } else {
         return std::move(rgb);
@@ -210,38 +221,57 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
 void Camera::render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                     const BVHNode *const parent, const SceneConfig &sceneConfig) {
     const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
-    // seeds first, globally
-    std::srand(static_cast<unsigned>(time(0)));
+    const size_t partition_num {sceneConfig.partition_num()};
+    const size_t partition_size {(_nx * _ny + partition_num - 1) / partition_num};
+    thread_pool pool(sceneConfig.thread_num());
 
-    for (int y = 0; y < _ny; ++y) {
-        for (int x = 0; x < _nx; ++x) {
-            // compute rgb for the pixel
-            Vector rgb = render_pixel(x, y, objects, lights, parent, sceneConfig);
-            rgb /= sampling_num_pow2;
-            // write rgb value to image
-            _image.pixel(x, y, rgb);
-        }
+    // render each partition in parallel
+    std::vector<std::future<void>> futures(partition_num);
+    for (size_t i {0}; i < partition_num; ++i) {
+        futures[i] = pool.submit(bind(&Camera::render_partition, this, i, partition_size,
+                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig),
+                                      sampling_num_pow2));
+    }
+    for (auto &f : futures) {
+        f.get();
     }
 }
 
-/**
- * This method can be applied in multi-threading, render each pixel discretely
- */
+void Camera::render_partition(const size_t partition_id, const size_t partition_size,
+                              const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+                              const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2) {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+    std::uniform_real_distribution<float> distribution(0.0, 1.0);
+    std::function<float()> rand_float = bind(distribution, generator);
+
+    size_t pixel_start = partition_id * partition_size;
+    size_t pixel_end = std::min(pixel_start + partition_size, static_cast<size_t>(_nx) * _ny);
+    for (size_t i {pixel_start}; i < pixel_end; ++i) {
+        int x {static_cast<int>(i % _nx)};
+        int y {static_cast<int>(i / _nx)};
+        Vector rgb = render_pixel(x, y, objects, lights, parent, sceneConfig, rand_float);
+        rgb /= sampling_num_pow2;
+        _image.pixel(x, y, rgb);
+    }
+}
+
 Vector Camera::render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                            const BVHNode *const parent, const SceneConfig &sceneConfig) {
+                            const BVHNode *const parent, const SceneConfig &sceneConfig,
+                            const std::function<float()> &rand_float) {
     Vector rgb;
 
     if (sceneConfig.pixel_sampling_num() == 1) {
         Ray ray = project_pixel(x, y);
         rgb += L(ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent, sceneConfig.render_flag(),
-                 sceneConfig.shadow_sampling_num());
+                 sceneConfig.shadow_sampling_num(), rand_float);
     } else {
         for (int p = 0; p < sceneConfig.pixel_sampling_num(); p++) {
             for (int q = 0; q < sceneConfig.pixel_sampling_num(); q++) {
                 Ray sampling_ray = project_pixel(x + (p + rand_float()) / sceneConfig.pixel_sampling_num(),
                                                  y + (q + rand_float()) / sceneConfig.pixel_sampling_num());
                 rgb += L(sampling_ray, sceneConfig.recursive_limit(), nullptr, objects, lights, parent,
-                         sceneConfig.render_flag(), sceneConfig.shadow_sampling_num());
+                         sceneConfig.render_flag(), sceneConfig.shadow_sampling_num(), rand_float);
             }
         }
     }

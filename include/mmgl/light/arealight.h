@@ -6,6 +6,7 @@
 #ifndef RAYTRACER_AREALIGHT_H
 #define RAYTRACER_AREALIGHT_H
 
+#include <functional>
 #include <vector>
 
 #include "mmgl/light/light.h"
@@ -26,7 +27,7 @@ public:
         init();
     }
 
-    std::vector<Point> sample(int sampling_num);
+    std::vector<Point> sample(int sampling_num, const std::function<float()> &rand_float);
 
     AreaLight &in(const Vector &color);
 

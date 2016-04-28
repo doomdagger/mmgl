@@ -5,9 +5,11 @@
 
 #include "mmgl/light/arealight.h"
 
+#include <functional>
+
 namespace mmgl {
 
-std::vector<Point> AreaLight::sample(int sampling_num) {
+std::vector<Point> AreaLight::sample(int sampling_num, const std::function<float()> &rand_float) {
     std::vector<Point> samples;
 
     if (sampling_num < 1) {

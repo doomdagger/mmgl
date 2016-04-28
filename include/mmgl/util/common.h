@@ -31,7 +31,7 @@ float get_token_as_float(std::string inString, int whichToken);
 
 void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);
 
-float rand_float();
+// float rand_float();
 
 }
 

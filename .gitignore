@@ -30,3 +30,5 @@
 # clion
 .idea/
 build/
+
+.DS_Store

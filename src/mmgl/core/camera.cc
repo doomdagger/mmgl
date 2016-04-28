@@ -211,7 +211,6 @@ Vector Camera::L(Ray &ray, int recursive_limit, const Surface *const object_id,
 
 void Camera::render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                     const BVHNode *const parent, const SceneConfig &sceneConfig) {
-    const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
     const size_t partition_num {sceneConfig.partition_num()};
     const size_t partition_size {(_nx * _ny + partition_num - 1) / partition_num};
     thread_pool pool(sceneConfig.thread_num());
@@ -220,8 +219,7 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
     std::vector<std::future<void>> futures(partition_num);
     for (size_t i {0}; i < partition_num; ++i) {
         futures[i] = pool.submit(bind(&Camera::render_partition, this, i, partition_size,
-                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig),
-                                      sampling_num_pow2));
+                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig)));
     }
     for (auto &f : futures) {
         f.get();
@@ -230,7 +228,8 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
 
 void Camera::render_partition(const size_t partition_id, const size_t partition_size,
                               const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                              const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2) {
+                              const BVHNode *const parent, const SceneConfig &sceneConfig) {
+    const int sampling_num_pow2 = std::pow(sceneConfig.pixel_sampling_num(), 2);
     long seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
     std::uniform_real_distribution<float> distribution(0.0, 1.0);

@@ -7,6 +7,7 @@
 #define RAYTRACER_SCENE_CONFIG_H
 
 #include <algorithm>
+#include <cassert>
 #include <thread>
 
 #include "mmgl/util/common.h"
@@ -27,6 +28,7 @@ public:
 
     SceneConfig &thread_num(unsigned thread_num) {
         _thread_num = thread_num;
+        assert(_thread_num > 0);
         return *this;
     }
 
@@ -35,7 +37,9 @@ public:
     }
 
     SceneConfig &partition_num(unsigned partition_num) {
-        _partition_num = std::min(partition_num, std::thread::hardware_concurrency());
+        _partition_num = partition_num;
+        assert(_partition_num > 0);
+        // _thread_num = std::min(partition_num, std::thread::hardware_concurrency());
         return *this;
     }
 

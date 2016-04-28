@@ -26,7 +26,7 @@ public:
 
     Scene(const std::string &scene_file);
 
-    inline const Camera &camera() const {
+    inline Camera &camera() {
         return _camera;
     }
 

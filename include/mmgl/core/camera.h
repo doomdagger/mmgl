@@ -60,26 +60,6 @@ public:
     void render(const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                 const BVHNode *const parent, const SceneConfig &sceneConfig);
 
-    void render_partition(const size_t partition_id, const size_t partition_size,
-                          const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                          const BVHNode *const parent, const SceneConfig &sceneConfig, const int sampling_num_pow2);
-
-    // add this function for multithreading
-    Vector render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-                        const BVHNode *const parent, const SceneConfig &sceneConfig,
-                        const std::function<float()> &rand_float);
-
-    Vector L(Ray &ray, int recursive_limit, const Surface *const object_id,
-             const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
-             const BVHNode *const parent, const Render &flag, int s_sampling_nu,
-             const std::function<float()> &rand_float);
-
-    std::pair<bool, Vector> blinn_phong(const Ray &pri_ray, const Point &light_pt, const Vector &light_cl,
-                                        const Intersection &intersection,
-                                        const Material &material, const std::vector<Surface *> &objects,
-                                        const BVHNode *const parent,
-                                        const Render &flag);
-
     void writeRgba(const std::string &) const;
 
     int width() const;
@@ -96,6 +76,26 @@ private:
     Camera(const Point &eye = Point(), float d = 0,
            const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
            int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);
+
+    void render_partition(const size_t partition_id, const size_t partition_size,
+                          const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+                          const BVHNode *const parent, const SceneConfig &sceneConfig);
+
+    // add this function for multithreading
+    Vector render_pixel(int x, int y, const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+                        const BVHNode *const parent, const SceneConfig &sceneConfig,
+                        const std::function<float()> &rand_float);
+
+    Vector L(Ray &ray, int recursive_limit, const Surface *const object_id,
+             const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
+             const BVHNode *const parent, const Render &flag, int s_sampling_nu,
+             const std::function<float()> &rand_float);
+
+    std::pair<bool, Vector> blinn_phong(const Ray &pri_ray, const Point &light_pt, const Vector &light_cl,
+                                        const Intersection &intersection,
+                                        const Material &material, const std::vector<Surface *> &objects,
+                                        const BVHNode *const parent,
+                                        const Render &flag);
 
     Point _eye;
     float _d;

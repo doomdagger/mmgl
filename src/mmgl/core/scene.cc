@@ -6,6 +6,7 @@
 #include "mmgl/core/scene.h"
 
 #include <chrono>
+// #include <queue>
 
 namespace mmgl {
 
@@ -16,15 +17,6 @@ Scene::Scene(const std::string &scene_file) {
     if (!inFile.is_open()) {  // if it's not open, error out.
         throw new std::runtime_error("Scene: Cannot open scene file '" + scene_file + "'");
     }
-
-    // Note: you'll have to keep track of whatever the last material
-    // you loaded in was, so you can apply it to any geometry that gets loaded.
-    // So here, you'll have something like:
-    //
-    // myMaterialClass *lastMaterialLoaded = 0;  // 0 or maybe a default material?
-    //
-    // and each time you load in a new piece of geometry (sphere, triangle, plane)
-    // you will set its material to lastMaterialLoaded.
 
     Material lastMaterialLoaded;
     float x, y, z, x2, y2, z2, x3, y3, z3;
@@ -45,9 +37,6 @@ Scene::Scene(const std::string &scene_file) {
             //
             // geometry types:
             //
-            // NOTE: whichever type of geo you load in, set its material to
-            // be "lastMaterialLoaded"
-            //
             case 's':
                 // it's a sphere, load in the parameters
 
@@ -56,12 +45,8 @@ Scene::Scene(const std::string &scene_file) {
                 z = get_token_as_float(line, 3);
                 r = get_token_as_float(line, 4);
 
-                // build your sphere here from the parameters
-                // i.e. you must call your sphere constructor and set its position
-                // and radius from the above values. You must also put your new
-                // sphere into the objects list (which can be global)
-                // So something like;
-                sphere(x, y, z, r, lastMaterialLoaded);
+                // sphere(x, y, z, r, lastMaterialLoaded);
+                add(Sphere(x, y, z, r, lastMaterialLoaded));
 
                 break;
 
@@ -76,7 +61,8 @@ Scene::Scene(const std::string &scene_file) {
                 y3 = get_token_as_float(line, 8);
                 z3 = get_token_as_float(line, 9);
 
-                triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                // triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                add (Triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded));
 
                 break;
 
@@ -119,7 +105,8 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 6);
                         b = get_token_as_float(line, 7);
 
-                        pointLight(x, y, z, r, g, b);
+                        // pointLight(x, y, z, r, g, b);
+                        add(PointLight(x, y, z, r, g, b));
 
                         break;
                     case 'd':   // directional light
@@ -130,7 +117,8 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 3);
                         b = get_token_as_float(line, 4);
 
-                        ambientLight(r, g, b);
+                        // ambientLight(r, g, b);
+                        add(AmbientLight(r, g, b));
 
                         break;
                     case 's':   // square area light
@@ -148,7 +136,8 @@ Scene::Scene(const std::string &scene_file) {
                         g = get_token_as_float(line, 13);
                         b = get_token_as_float(line, 14);
 
-                        areaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
+                        // areaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b);
+                        add(AreaLight(x, y, z, x2, y2, z2, x3, y3, z3, d, r, g, b));
 
                         break;
                     default:
@@ -162,14 +151,6 @@ Scene::Scene(const std::string &scene_file) {
                 // materials:
                 //
             case 'm':   // material
-                // the trick here: we should keep a pointer to the last material we read in,
-                // so we can apply it to any subsequent geometry. Say it's called "lastMaterialLoaded"
-                // we migh then do something like this:
-                //
-                //  1. read in the 10 material parameters: dr, dg, db, sr, sg, sb, r, ir, ig, ib
-                //  2. call lastMaterialLoaded->setMaterial(dr, dg, db,...);
-                //
-
                 dr = get_token_as_float(line, 1);
                 dg = get_token_as_float(line, 2);
                 db = get_token_as_float(line, 3);
@@ -199,7 +180,8 @@ Scene::Scene(const std::string &scene_file) {
                     x3 = verts[3 * tris[3 * i + 2]];
                     y3 = verts[3 * tris[3 * i + 2] + 1];
                     z3 = verts[3 * tris[3 * i + 2] + 2];
-                    triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                    // triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded);
+                    add(Triangle(x, y, z, x2, y2, z2, x3, y3, z3, lastMaterialLoaded));
                 }
 
                 break;
@@ -229,25 +211,19 @@ void Scene::render() {
         return;
     }
 
-    std::vector<Surface *> objects_vec;
-    std::vector<Light *> lights_vec;
-
-    std::copy(_surfaces.begin(), _surfaces.end(), std::back_inserter(objects_vec));
-    std::copy(_lights.begin(), _lights.end(), std::back_inserter(lights_vec));
-
     using namespace std::chrono;
 
     // build bvh tree
-    BVHNode *parent = nullptr;
+    std::unique_ptr<BVHNode> parent {nullptr};
     if (config._render_flag == Render::BVH || config._render_flag == Render::BVH_BBOX_ONLY) {
         std::cout << "Start to build BVH Tree..." << std::endl;
         auto func_start = high_resolution_clock::now();
 
         // in case of we only have one object
-        if (!(parent = dynamic_cast<BVHNode *>(
-                BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end(), config._bvh_mode)))) {
-            parent = new BVHNode(objects_vec.begin(), objects_vec.end());
-            parent->_left = objects_vec[0];
+        parent.reset(dynamic_cast<BVHNode *>(BVHNode::create_bvh_tree(_surfaces.begin(), _surfaces.end(), config._bvh_mode).get()));
+        if (!parent) {
+            parent.reset(new BVHNode(_surfaces.begin(), _surfaces.end()));
+            (parent->_left).reset(_surfaces[0]->clone());
         }
 
         auto func_end = high_resolution_clock::now();
@@ -257,75 +233,105 @@ void Scene::render() {
     // render
     std::cout << "Start to render..." << std::endl;
     auto func_start = high_resolution_clock::now();
-    _camera.render(objects_vec, lights_vec, parent, config);
+    _camera.render(_surfaces, _lights, parent, config);
     auto func_end = high_resolution_clock::now();
     std::cout << "Finish rendering in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
 
     // clean up memory, using BFS
-    if (parent) {
-        std::queue<BVHNode *> q;
-        q.push(parent);
-        while (!q.empty()) {
-            BVHNode *node = q.front();
-            q.pop();
+    // if (parent) {
+    //     std::queue<BVHNode *> q;
+    //     q.push(parent);
+    //     while (!q.empty()) {
+    //         BVHNode *node = q.front();
+    //         q.pop();
 
-            BVHNode *node_left = nullptr;
-            BVHNode *node_right = nullptr;
+    //         BVHNode *node_left = nullptr;
+    //         BVHNode *node_right = nullptr;
 
-            if (node->_left && (node_left = dynamic_cast<BVHNode *>(node->_left))) {
-                q.push(node_left);
-            }
-            if (node->_right && (node_right = dynamic_cast<BVHNode *>(node->_right))) {
-                q.push(node_right);
-            }
+    //         if (node->_left && (node_left = dynamic_cast<BVHNode *>(node->_left))) {
+    //             q.push(node_left);
+    //         }
+    //         if (node->_right && (node_right = dynamic_cast<BVHNode *>(node->_right))) {
+    //             q.push(node_right);
+    //         }
 
-            delete node;
-        }
-    }
+    //         delete node;
+    //     }
+    // }
 }
 
-Sphere &Scene::sphere(float x, float y, float z, float radius, const Material &material) {
-    Sphere *surface = new Sphere(x, y, z, radius);
-    surface->material(material);
-    _surfaces.push_back(surface);
-    return *surface;
+Scene &Scene::add(const Sphere &sphere) {
+    std::unique_ptr<Surface> surface {new Sphere(sphere)};
+    _surfaces.push_back(std::move(surface));
+    return *this;
 }
 
-Triangle &Scene::triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
-                          float z3, const Material &material) {
-    Triangle *surface = new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3);
-    surface->material(material);
-    _surfaces.push_back(surface);
-    return *surface;
+Scene &Scene::add(const Triangle &triangle) {
+    std::unique_ptr<Surface> surface {new Triangle(triangle)};
+    _surfaces.push_back(std::move(surface));
+    return *this;
 }
 
-PointLight &Scene::pointLight(float x, float y, float z, float r, float g, float b) {
-    PointLight *light = new PointLight(x, y, z, r, g, b);
-    _lights.push_back(light);
-    return *light;
+Scene &Scene::add(const PointLight &point_light) {
+    std::unique_ptr<Light> light {new PointLight(point_light)};
+    _lights.push_back(std::move(light));
+    return *this;
 }
 
-AreaLight &Scene::areaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
-                            float len, float r, float g, float b) {
-    AreaLight *light = new AreaLight{x, y, z, nx, ny, nz, ux, uy, uz, len, r, g, b};
-    _lights.push_back(light);
-    return *light;
+Scene &Scene::add(const AreaLight &area_light) {
+    std::unique_ptr<Light> light {new AreaLight(area_light)};
+    _lights.push_back(std::move(light));
+    return *this;
 }
 
-AmbientLight &Scene::ambientLight(float r, float g, float b) {
-    AmbientLight *light = new AmbientLight{r, g, b};
-    _lights.push_back(light);
-    return *light;
+Scene &Scene::add(const AmbientLight &ambient_light) {
+    std::unique_ptr<Light> light {new AmbientLight(ambient_light)};
+    _lights.push_back(std::move(light));
+    return *this;
 }
+
+// Sphere &Scene::sphere(float x, float y, float z, float radius, const Material &material) {
+//     Sphere *surface = new Sphere(x, y, z, radius);
+//     surface->material(material);
+//     _surfaces.push_back(surface);
+//     return *surface;
+// }
+
+// Triangle &Scene::triangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3,
+//                           float z3, const Material &material) {
+//     Triangle *surface = new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+//     surface->material(material);
+//     _surfaces.push_back(surface);
+//     return *surface;
+// }
+
+// PointLight &Scene::pointLight(float x, float y, float z, float r, float g, float b) {
+//     PointLight *light = new PointLight(x, y, z, r, g, b);
+//     _lights.push_back(light);
+//     return *light;
+// }
+
+// AreaLight &Scene::areaLight(float x, float y, float z, float nx, float ny, float nz, float ux, float uy, float uz,
+//                             float len, float r, float g, float b) {
+//     AreaLight *light = new AreaLight{x, y, z, nx, ny, nz, ux, uy, uz, len, r, g, b};
+//     _lights.push_back(light);
+//     return *light;
+// }
+
+// AmbientLight &Scene::ambientLight(float r, float g, float b) {
+//     AmbientLight *light = new AmbientLight{r, g, b};
+//     _lights.push_back(light);
+//     return *light;
+// }
 
 Scene::~Scene() {
-    for (auto &elem : _surfaces) {
-        delete elem;
-    }
+    // for (auto &elem : _surfaces) {
+    //     delete elem;
+    // }
 
-    for (auto &elem : _lights) {
-        delete elem;
-    }
+    // for (auto &elem : _lights) {
+    //     delete elem;
+    // }
 }
 
 void Scene::configCamera(float x, float y, float z, float dx, float dy, float dz, float d,

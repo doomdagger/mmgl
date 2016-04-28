@@ -6,8 +6,9 @@
 #ifndef RAYTRACER_SURFACE_H
 #define RAYTRACER_SURFACE_H
 
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include "mmgl/surface/material.h"
 #include "mmgl/surface/ray.h"
@@ -19,6 +20,8 @@ namespace mmgl {
 class Surface {
 public:
     virtual ~Surface() { }
+
+    virtual Surface *clone() const = 0;
 
     inline const Material &material() const {
         return _material;

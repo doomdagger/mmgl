@@ -17,7 +17,7 @@ public:
 
     Light(const Vector &rgb) : _color{rgb} { }
 
-    virtual inline const Vector &color() const {
+    inline const Vector &color() const {
         return _color;
     }
 

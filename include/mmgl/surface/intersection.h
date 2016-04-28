@@ -6,6 +6,9 @@
 #ifndef RAYTRACER_INTERSECTION_H
 #define RAYTRACER_INTERSECTION_H
 
+#include <memory>
+#include <cstdint>
+
 #include "mmgl/util/point.h"
 #include "mmgl/util/vector.h"
 
@@ -15,11 +18,11 @@ class Surface;
 
 class Intersection {
 public:
-    Intersection() : _t(0.0f), _point(), _normal(), _id(nullptr) { }
+    Intersection() : _t(0.0f), _point(), _normal(), _id(reinterpret_cast<uintptr_t>(nullptr)) { }
 
-    Intersection(float t, const Point &point, const Vector &normal, const Surface *const id) : _t(t), _point(point),
-                                                                                               _normal(normal),
-                                                                                               _id(id) { }
+    Intersection(float t, const Point &point, const Vector &normal, const uintptr_t id) : _t(t), _point(point),
+                                                                                          _normal(normal),
+                                                                                          _id(id) { }
 
     inline float t() const {
         return _t;
@@ -33,7 +36,7 @@ public:
         return _normal;
     }
 
-    inline const Surface *id() const {
+    inline uintptr_t id() const {
         return _id;
     }
 
@@ -41,7 +44,7 @@ private:
     float _t;
     Point _point;
     Vector _normal;
-    const Surface *_id;
+    uintptr_t _id;
 };
 
 }

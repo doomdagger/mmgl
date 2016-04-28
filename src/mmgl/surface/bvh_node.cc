@@ -5,16 +5,21 @@
 
 #include "mmgl/surface/bvh_node.h"
 
+#include <cstdint>
+#include <memory>
+
 namespace mmgl {
 
-Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
-                                  const std::vector<Surface *>::iterator &end, const BVH &bvh_mode) {
+std::unique_ptr<Surface> BVHNode::create_bvh_tree(const std::vector<std::unique_ptr<Surface>>::iterator &begin,
+                                                  const std::vector<std::unique_ptr<Surface>>::iterator &end, const BVH &bvh_mode) {
     if (begin == end) {
-        return nullptr;
+        std::unique_ptr<Surface> p {nullptr};
+        return std::move(p);
     } else if (begin + 1 == end) {
-        return *begin;
+        std::unique_ptr<Surface> p {(*begin)->clone()};
+        return std::move(p);
     } else {
-        BVHNode *node = new BVHNode(begin, end);
+        std::unique_ptr<BVHNode> node {new BVHNode(begin, end)};
         float x_span = node->box().max().x() - node->box().min().x();
         float y_span = node->box().max().y() - node->box().min().y();
         float z_span = node->box().max().z() - node->box().min().z();
@@ -26,7 +31,7 @@ Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
         }
         std::sort(begin, end, BBoxComparable{flag});
 
-        std::vector<Surface *>::iterator median;
+        std::vector<std::unique_ptr<Surface>>::iterator median;
         if (bvh_mode == BVH::VOLUME_CUT) {
             // volume based cut --- binary search
             median = determine_cut(begin, end);
@@ -37,7 +42,7 @@ Surface *BVHNode::create_bvh_tree(const std::vector<Surface *>::iterator &begin,
 
         node->_left = create_bvh_tree(begin, median, bvh_mode);
         node->_right = create_bvh_tree(median, end, bvh_mode);
-        return node;
+        return std::move(node);
     }
 }
 
@@ -49,11 +54,9 @@ bool BVHNode::intersect(Ray &ray, const Render &flag) const {
     return box_intersect(ray).first;
 }
 
-void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const Surface *const surface, const Render &flag) {
-
-    const Surface *const left = parent->_left;
-    const Surface *const right = parent->_right;
-
+void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const uintptr_t surface, const Render &flag) {
+    const Surface *const left = (parent->_left).get();
+    const Surface *const right = (parent->_right).get();
     const BVHNode *const node_left = dynamic_cast<const BVHNode *const>(left);
     const BVHNode *const node_right = dynamic_cast<const BVHNode *const>(right);
 
@@ -72,7 +75,7 @@ void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const Surface *co
                 left_hit_t = left_result.second;
                 left_hit = true;
             }
-        } else if (left != surface) {
+        } else if (reinterpret_cast<uintptr_t>(left) != surface) {
             left->intersect(ray, flag);
         }
     }
@@ -84,7 +87,7 @@ void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const Surface *co
                 right_hit_t = right_result.second;
                 right_hit = true;
             }
-        } else if (right != surface) {
+        } else if (reinterpret_cast<uintptr_t>(right) != surface) {
             right->intersect(ray, flag);
         }
     }
@@ -108,8 +111,8 @@ void BVHNode::intersect(Ray &ray, const BVHNode *const parent, const Surface *co
     }
 }
 
-const std::vector<Surface *>::iterator BVHNode::determine_cut(const std::vector<Surface *>::iterator &begin,
-                                                              const std::vector<Surface *>::iterator &end) {
+const std::vector<std::unique_ptr<Surface>>::iterator BVHNode::determine_cut(const std::vector<std::unique_ptr<Surface>>::iterator &begin,
+                                                                             const std::vector<std::unique_ptr<Surface>>::iterator &end) {
     unsigned long size = end - begin;
     unsigned long median = size / 2;
     unsigned long first = 0, last = size;
@@ -129,10 +132,10 @@ const std::vector<Surface *>::iterator BVHNode::determine_cut(const std::vector<
 }
 
 
-float BVHNode::compute_volume(const std::vector<Surface *>::const_iterator &begin,
-                              const std::vector<Surface *>::const_iterator &end) {
+float BVHNode::compute_volume(const std::vector<std::unique_ptr<Surface>>::const_iterator &begin,
+                              const std::vector<std::unique_ptr<Surface>>::const_iterator &end) {
     float x_min, y_min, z_min, x_max, y_max, z_max;
-    std::vector<Surface *>::const_iterator iter = begin;
+    std::vector<std::unique_ptr<Surface>>::const_iterator iter = begin;
     x_min = (*iter)->box().min().x();
     y_min = (*iter)->box().min().y();
     z_min = (*iter)->box().min().z();
@@ -152,11 +155,11 @@ float BVHNode::compute_volume(const std::vector<Surface *>::const_iterator &begi
     return (x_max - x_min) * (y_max - y_min) * (z_max - z_min);
 }
 
-BVHNode::BVHNode(const std::vector<Surface *>::const_iterator &begin,
-                 const std::vector<Surface *>::const_iterator &end)
+BVHNode::BVHNode(const std::vector<std::unique_ptr<Surface>>::const_iterator &begin,
+                 const std::vector<std::unique_ptr<Surface>>::const_iterator &end)
         : _left{nullptr}, _right{nullptr} {
     float x_min, y_min, z_min, x_max, y_max, z_max;
-    std::vector<Surface *>::const_iterator iter = begin;
+    std::vector<std::unique_ptr<Surface>>::const_iterator iter = begin;
     x_min = (*iter)->box().min().x();
     y_min = (*iter)->box().min().y();
     z_min = (*iter)->box().min().z();

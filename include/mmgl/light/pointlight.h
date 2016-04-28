@@ -19,6 +19,8 @@ public:
 
     PointLight(const Point &point, const Vector &rgb) : Light{rgb}, _orig{point} { }
 
+    PointLight(const PointLight &light) : Light(light.color()), _orig{light.orig()} { }
+
 
     inline const Point &orig() const {
         return _orig;

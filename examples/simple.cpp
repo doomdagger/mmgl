@@ -24,24 +24,13 @@ int main(int argc, char *argv[]) {
 
     scene.render();
 
-    scene.save("/home/zwd/test.bmp");
+    scene.save("simple.bmp");
 
     sphere.at(20, 13.67f, -62.57f);
 
     scene.render();
 
-    scene.save("/home/zwd/test1.bmp");
-
-//    Scene scene("/home/lihe/Desktop/parser/teapot.txt");
-//
-//    scene.config.shadow_sampling_num(1);
-//    scene.config.pixel_sampling_num(1);
-//    scene.config.recursive_limit(2);
-//    scene.config.render_flag(Render::BVH);
-//
-//    scene.render();
-//
-//    scene.save("/home/lihe/Desktop/test.bmp");
+    scene.save("simple2.bmp");
 
     return 0;
 }

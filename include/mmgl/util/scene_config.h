@@ -15,7 +15,7 @@
 namespace mmgl {
 
 /**
- * SceneConfig configures the scene parameters. All parameters except for the camera configs are in this class.
+ * The SceneConfig class configures the scene parameters. All parameters except for the camera configs are in this class.
  */
 class SceneConfig {
 public:

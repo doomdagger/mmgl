@@ -24,7 +24,7 @@
 namespace mmgl {
 
 /**
- * Scene class decribes the objects to be rendered. Lights are also used in a Scene object.
+ * The Scene class decribes the objects to be rendered. Lights are also used in a Scene object.
  * The configuration parameters are in _config of type SceneConfig.
  * The Camera object _camera is used for rendering.
  */

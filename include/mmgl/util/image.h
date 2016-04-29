@@ -18,7 +18,7 @@
 namespace mmgl {
 
 /**
- * Image class stores the rendering results in an RGB matrix.
+ * This class maintains the rendering results in an RGB matrix.
  */
 class Image {
 public:

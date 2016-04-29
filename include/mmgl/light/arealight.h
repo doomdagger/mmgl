@@ -15,7 +15,7 @@
 namespace mmgl {
 
 /**
- * AreaLight class for an arealight used in the scene.
+ * This class is for an arealight used in the scene.
  * Derived from Light base class.
  */
 class AreaLight : public Light {

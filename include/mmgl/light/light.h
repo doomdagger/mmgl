@@ -12,7 +12,7 @@
 namespace mmgl {
 
 /**
- * Light is the base class for all lights.
+ * This is the base class for all lights.
  */
 class Light {
 public:

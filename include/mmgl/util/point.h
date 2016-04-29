@@ -11,7 +11,7 @@
 namespace mmgl {
 
 /**
- * Point class abstracts three dimensional points
+ * This class abstracts three dimensional points.
  * Public member functions have obvious meanings as their names indicate.
  */
 class Point {

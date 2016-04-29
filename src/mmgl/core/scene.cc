@@ -15,15 +15,6 @@ Scene::Scene(const std::string &scene_file) {
         throw new std::runtime_error("Scene: Cannot open scene file '" + scene_file + "'");
     }
 
-    // Note: you'll have to keep track of whatever the last material
-    // you loaded in was, so you can apply it to any geometry that gets loaded.
-    // So here, you'll have something like:
-    //
-    // myMaterialClass *lastMaterialLoaded = 0;  // 0 or maybe a default material?
-    //
-    // and each time you load in a new piece of geometry (sphere, triangle, plane)
-    // you will set its material to lastMaterialLoaded.
-
     Material lastMaterialLoaded;
     float x, y, z, x2, y2, z2, x3, y3, z3;
     float r, g, b;
@@ -43,9 +34,6 @@ Scene::Scene(const std::string &scene_file) {
             //
             // geometry types:
             //
-            // NOTE: whichever type of geo you load in, set its material to
-            // be "lastMaterialLoaded"
-            //
             case 's':
                 // it's a sphere, load in the parameters
 
@@ -54,11 +42,6 @@ Scene::Scene(const std::string &scene_file) {
                 z = get_token_as_float(line, 3);
                 r = get_token_as_float(line, 4);
 
-                // build your sphere here from the parameters
-                // i.e. you must call your sphere constructor and set its position
-                // and radius from the above values. You must also put your new
-                // sphere into the objects list (which can be global)
-                // So something like;
                 sphere(x, y, z, r, lastMaterialLoaded);
 
                 break;
@@ -82,8 +65,6 @@ Scene::Scene(const std::string &scene_file) {
                 // camera:
                 //
             case 'c':   // camera
-                // one trick here: the cameras pixel count (width, height) are integers,
-                // so cast them.
 
                 x = get_token_as_float(line, 1);
                 y = get_token_as_float(line, 2);
@@ -160,9 +141,6 @@ Scene::Scene(const std::string &scene_file) {
                 // materials:
                 //
             case 'm':   // material
-                // the trick here: we should keep a pointer to the last material we read in,
-                // so we can apply it to any subsequent geometry. Say it's called "lastMaterialLoaded"
-                // we migh then do something like this:
                 //
                 //  1. read in the 10 material parameters: dr, dg, db, sr, sg, sb, r, ir, ig, ib
                 //  2. call lastMaterialLoaded->setMaterial(dr, dg, db,...);
@@ -210,7 +188,7 @@ Scene::Scene(const std::string &scene_file) {
                 //
                 // options
                 //
-            case 'o':   // make your own options if you wish
+            case 'o':
                 break;
 
             default:

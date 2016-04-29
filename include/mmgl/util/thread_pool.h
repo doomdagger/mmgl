@@ -45,6 +45,7 @@ public:
 
 /**
  * Thread safe queue based on locks.
+ * Implementation based on the book "C++ Concurrency in Action".
  */
 template<typename T>
 class thread_safe_queue {
@@ -97,7 +98,9 @@ public:
         }
 };
 
-// threads joiner
+/**
+ * Threads joiner that joins all threads in the pool in destructor.
+ */
 class join_threads {
         std::vector<std::thread>& threads;
 public:
@@ -110,7 +113,10 @@ public:
         }
 };
 
-// thread pool
+/**
+ * Thread pool that provides better control over the number of threads used for rendering.
+ * This implementation is based on the book "C++ Concurrency in Action".
+ */
 class thread_pool {
         std::atomic_bool done;
         thread_safe_queue<function_wrapper> work_queue;

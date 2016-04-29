@@ -10,10 +10,6 @@
 
 namespace mmgl {
 
-/**
- * i: x
- * j: y
- */
 Ray Camera::project_pixel(float i, float j) {
     float u = _l + (_r - _l) * (i + 0.5f) / _nx;
     float v = _b + (_t - _b) * (_ny - j + 0.5f) / _ny;

@@ -13,6 +13,10 @@
 
 namespace mmgl {
 
+/**
+ * The Vector class stores RBG values and overloads operations for easy manipulation on RGB vectors.
+ * The public member functions have obvious meanings as their names indicate.
+ */
 class Vector {
 public:
     friend class Triangle;

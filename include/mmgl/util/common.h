@@ -17,24 +17,36 @@
 
 namespace mmgl {
 
+/**
+ * Alias for the rendering result RGB matrix.
+ */
 using RenderResult = std::vector<std::vector<Vector>>;
 
+/**
+ * Render algorithm options.
+ */
 enum class Render {
-    NORMAL = 0,
-    BBOX_ONLY = 1,
-    BVH_BBOX_ONLY = 2,
-    BVH = 3
+    NORMAL = 0,         /** The Basic ray tracing algorithm */
+    BBOX_ONLY = 1,      /** Bounding box only */
+    BVH_BBOX_ONLY = 2,  /** BVH bounding box only*/
+    BVH = 3             /** BVH structure for acceleration */
 };
 
+/**
+ * BVH options.
+ */
 enum class BVH {
-    VOLUME_CUT = 0,
-    COUNT_CUT = 1
+    VOLUME_CUT = 0,     /** Volume cut option for BVH tree */
+    COUNT_CUT = 1       /** Count cut option for BVH tree */
 };
 
+/**
+ * Multithreading method options provided.
+ */;
 enum class ParallelMethod {
-    STD_ASYNC,
-    STD_ASYNC_FORCE,
-    THREAD_POOL
+    STD_ASYNC,          /** use std::async */
+    STD_ASYNC_FORCE,    /** use std::async with std::launch::async */
+    THREAD_POOL         /** use customized thread pool */
 };
 
 float get_token_as_float(std::string inString, int whichToken);

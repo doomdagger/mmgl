@@ -17,6 +17,9 @@
 
 namespace mmgl {
 
+/**
+ * Image class stores the rendering results in an RGB matrix.
+ */
 class Image {
 public:
     Image(): _image{} {}
@@ -31,6 +34,10 @@ public:
         return _height;
     }
 
+    /**
+     * This member function returns a handle to the RenderResult, i.e. RGB matrix.
+     * @return a const reference to the underlying _image matrix.
+     */
     inline const RenderResult& handle() const {
         return _image;
     }

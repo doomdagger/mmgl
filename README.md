@@ -52,4 +52,4 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-To compile this program, just compile with the C++11 flag and ink with the MMGL library installed: `g++ -std=c++11 -O3 main.cpp -lmmgl -pthread`. Run the program and you'll see amazing graphics!
+To compile this program, just compile with the C++11 flag and link with the MMGL library installed: `g++ -std=c++11 -O3 main.cpp -lmmgl -pthread`. Besides adding objects dynamically like this, the library also supports simplified wavefront .obj file format that describes a triangle mesh for complex scene design. Run the program and you'll see amazing graphics!

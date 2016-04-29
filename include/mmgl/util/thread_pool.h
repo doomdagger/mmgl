@@ -45,6 +45,7 @@ public:
 
 /**
  * Thread safe queue based on locks.
+ */
 template<typename T>
 class thread_safe_queue {
         mutable std::mutex mut;

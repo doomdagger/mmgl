@@ -5,6 +5,8 @@
 
 #include "mmgl/core/camera.h"
 
+#include "mmgl/util/common.h"
+
 
 namespace mmgl {
 
@@ -218,8 +220,16 @@ void Camera::render(const std::vector<Surface *> &objects, const std::vector<Lig
     // render each partition in parallel
     std::vector<std::future<void>> futures(partition_num);
     for (size_t i {0}; i < partition_num; ++i) {
-        futures[i] = pool.submit(bind(&Camera::render_partition, this, i, partition_size,
-                                      std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig)));
+        if (sceneConfig.parallel_method() == ParallelMethod::STD_ASYNC) {
+            futures[i] = async(&Camera::render_partition, this, i, partition_size,
+                               std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig));
+        } else if (sceneConfig.parallel_method() == ParallelMethod::STD_ASYNC_FORCE) {
+            futures[i] = async(std::launch::async, &Camera::render_partition, this, i, partition_size,
+                               std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig));
+        } else { /* ParallelMethod::THREAD_POOL */
+            futures[i] = pool.submit(bind(&Camera::render_partition, this, i, partition_size,
+                                          std::cref(objects), std::cref(lights), std::cref(parent), std::cref(sceneConfig)));
+        }
     }
     for (auto &f : futures) {
         f.get();

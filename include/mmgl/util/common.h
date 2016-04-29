@@ -31,6 +31,12 @@ enum class BVH {
     COUNT_CUT = 1
 };
 
+enum class ParallelMethod {
+    STD_ASYNC,
+    STD_ASYNC_FORCE,
+    THREAD_POOL
+};
+
 float get_token_as_float(std::string inString, int whichToken);
 
 void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector<float> &verts);

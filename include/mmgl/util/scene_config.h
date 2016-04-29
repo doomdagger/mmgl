@@ -20,7 +20,8 @@ public:
 
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},
-                    _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000} { }
+                    _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000},
+                    _parallel_method{ParallelMethod::THREAD_POOL} { }
 
     unsigned thread_num() const {
         return _thread_num;
@@ -40,6 +41,15 @@ public:
         _partition_num = partition_num;
         assert(_partition_num > 0);
         // _thread_num = std::min(partition_num, std::thread::hardware_concurrency());
+        return *this;
+    }
+
+    const ParallelMethod &parallel_method() const {
+        return _parallel_method;
+    }
+
+    SceneConfig &parallel_method(const ParallelMethod &parallel_method) {
+        _parallel_method = parallel_method;
         return *this;
     }
 
@@ -96,6 +106,7 @@ private:
     int _recursive_limit;
     unsigned _thread_num;
     unsigned _partition_num;
+    ParallelMethod _parallel_method;
 };
 
 }

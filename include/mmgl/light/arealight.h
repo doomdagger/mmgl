@@ -14,6 +14,10 @@
 
 namespace mmgl {
 
+/**
+ * AreaLight class for an arealight used in the scene.
+ * Derived from Light base class.
+ */
 class AreaLight : public Light {
 public:
     AreaLight(float x, float y, float z, float nx, float ny, float nz,
@@ -29,22 +33,58 @@ public:
 
     std::vector<Point> sample(int sampling_num, const std::function<float()> &rand_float);
 
+    /**
+     * Set the color of this arealight.
+     * @param color a Vector of RGB values.
+     */
     AreaLight &in(const Vector &color);
 
+    /**
+     * Set the color of this arealight.
+     * @param r/g/b RBG values.
+     */
     AreaLight &in(float r, float g, float b);
 
+    /**
+     * Set the position of this arealight.
+     * @param position A point specifying the position
+     */
     AreaLight &at(const Point &position);
 
+    /**
+     * Set the position of this arealight.
+     * @param x/y/z A point(x, y, z) specifying the position
+     */
     AreaLight &at(float x, float y, float z);
 
+    /**
+     * Set the facing of this arealight.
+     * @param norm A Vector specifying the facing
+     */
     AreaLight &facing(const Vector &norm);
 
+    /**
+     * Set the facing of this arealight.
+     * @param x/y/z A Vector(x, y, z) specifying the facing
+     */
     AreaLight &facing(float x, float y, float z);
 
+    /**
+     * Set the forward of this arealight.
+     * @param u A Vector specifying the forward
+     */
     AreaLight &forward(const Vector &u);
 
+    /**
+     * Set the forward of this arealight.
+     * @param x/y/z A Specify the forward using x, y, z.
+     */
     AreaLight &forward(float x, float y, float z);
 
+    /**
+     * Set the length of this arealight.
+     * @param len Type is float.
+     */
     AreaLight &length(float len);
 
     inline const Point &orig() const {

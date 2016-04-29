@@ -18,6 +18,9 @@
 
 namespace mmgl {
 
+/**
+ * Bounding Box class used in rendering.
+ */
 class BBox {
 public:
     std::pair<bool, float> intersect(const Ray &ray, bool isNode) const;

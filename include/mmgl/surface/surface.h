@@ -16,6 +16,10 @@
 
 namespace mmgl {
 
+/**
+ * Abstract base class for all kinds of surfaces.
+ * Public member functions have obvious meanings as their names indicate.
+ */
 class Surface {
 public:
     virtual ~Surface() { }

@@ -12,6 +12,10 @@
 
 namespace mmgl {
 
+/**
+ * PointLight class for a pointlight used in the scene.
+ * Derived from Light base class.
+ */
 class PointLight : public Light {
 public:
     PointLight(float x = 0, float y = 0, float z = 0,
@@ -24,12 +28,28 @@ public:
         return _orig;
     }
 
+    /**
+     * Set the color of this pointlight.
+     * @param color a Vector of RGB values.
+     */
     PointLight &in(const Vector &color);
 
+    /**
+     * Set the color of this pointlight.
+     * @param r/g/b RBG values.
+     */
     PointLight &in(float r, float g, float b);
 
+    /**
+     * Set the position of this pointlight.
+     * @param position A point specifying the position
+     */
     PointLight &at(const Point &position);
 
+    /**
+     * Set the position of this pointlight.
+     * @param x/y/z A point(x, y, z) specifying the position
+     */
     PointLight &at(float x, float y, float z);
 
 private:

@@ -10,6 +10,10 @@
 
 namespace mmgl {
 
+/**
+ * Class for materials used by surfaces.
+ * Public member functions have obvious meanings.
+ */
 class Material {
 public:
 

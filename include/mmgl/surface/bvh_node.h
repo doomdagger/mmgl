@@ -15,6 +15,10 @@
 
 namespace mmgl {
 
+/**
+ * Class for nodes in the BVH tree.
+ * Derived from Surface base class.
+ */
 class BVHNode : public Surface {
 public:
     friend class Scene;
@@ -22,19 +26,27 @@ public:
     friend class Camera;
 
 private:
-    // create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers
+    /**
+     * Create bvh tree with a lot of pointers, scene is in charge of deleting all of these pointers.
+     */
     static Surface *create_bvh_tree(const std::vector<Surface *>::iterator &begin,
                                     const std::vector<Surface *>::iterator &end, const BVH &bvh_mode);
 
-    // helper function, compute volume
+    /**
+     * Helper function for computing volume.
+     */
     static float compute_volume(const std::vector<Surface *>::const_iterator &begin,
                                 const std::vector<Surface *>::const_iterator &end);
 
-    // helper function, determine cut position
+    /*
+     * Helper function for determining cut position.
+     */
     static const std::vector<Surface *>::iterator determine_cut(const std::vector<Surface *>::iterator &begin,
                                                                 const std::vector<Surface *>::iterator &end);
 
-    // intersect function, from parent node to all its leaves
+    /**
+     * Intersect function, from parent node to all its leaves.
+     */
     static void intersect(Ray &ray, const BVHNode *const parent, const Surface *const surface, const Render &flag);
 
     BVHNode(const std::vector<Surface *>::const_iterator &begin,
@@ -48,6 +60,9 @@ private:
     Surface *_right;
 };
 
+/**
+ * Function object for comparing bounding boxes.
+ */
 struct BBoxComparable {
     enum class CompareFlag {
         X, Y, Z

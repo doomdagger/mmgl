@@ -17,6 +17,10 @@
 
 namespace mmgl {
 
+/**
+ * Class for rays in ray tracing algorithms.
+ * Public member functions have obvious meanings.
+ */
 class Ray {
 public:
     friend class Triangle;

@@ -12,7 +12,7 @@
 namespace mmgl {
 
 /**
- * Class for ambient light used in the scene.
+ * AmbientLight class for ambient light used in the scene.
  * Derived from the Light base class.
  */
 class AmbientLight : public Light {

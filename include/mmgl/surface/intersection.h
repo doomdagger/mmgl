@@ -13,6 +13,9 @@ namespace mmgl {
 
 class Surface;
 
+/**
+ * Class for intersection.
+ */
 class Intersection {
 public:
     Intersection() : _t(0.0f), _point(), _normal(), _id(nullptr) { }

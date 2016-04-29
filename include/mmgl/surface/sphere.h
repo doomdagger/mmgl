@@ -15,6 +15,10 @@
 
 namespace mmgl {
 
+/**
+ * Class for sphere objects.
+ * Derived from Surface base class.
+ */
 class Sphere : public Surface {
 public:
     Sphere(float x = 0, float y = 0, float z = 0, float r = 0);
@@ -33,12 +37,26 @@ public:
         return _radius;
     }
 
+    /**
+     * Set the position of the sphere.
+     * @param central Point type variable specifying the center of the sphere.
+     */
     Sphere &at(const Point &central);
 
+    /**
+     * Set the position of the sphere.
+     * @param x/y/z Three floats specifying the sphere center.
+     */
     Sphere &at(float x, float y, float z);
 
+    /**
+     * Set the radius of the sphere.
+     */
     Sphere &radius(float radius);
 
+    /**
+     * Set the material of the sphere.
+     */
     Sphere &made_of(const Material &material);
 
 private:

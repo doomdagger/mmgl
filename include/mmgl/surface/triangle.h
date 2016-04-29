@@ -14,6 +14,11 @@
 
 namespace mmgl {
 
+/**
+ * Class for triangle objects.
+ * Derived from Surface base class.
+ * Public members have obvious meanings as their names indicate.
+ */
 class Triangle : public Surface {
 public:
     Triangle(float x1 = 0, float y1 = 0, float z1 = 0,

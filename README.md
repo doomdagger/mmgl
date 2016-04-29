@@ -1,10 +1,10 @@
-# MMGL: Minimal Multithreaded Graphics Library
+# MMGL: Mini Multithread Graphics Library
 
-Minimal Multithreaded Graphics Libaray (MMGL) is a library for displaying computer graphics. The library is able to render a variety of graphics objects including spheres, triangles, and more complex triangle meshes. The library is designed to be lightweight and easy-to-use, providing highly abstracted interfaces for beginners. It also employs parallel processing so that the rendering is highly efficient. The code is implemented with 100% portable C++11, so this cross-platform library works flawlessly on a variety of systems. Applications of this library include computer graphics, animation, and education for novice graphics programmers.
+Mini Multithread Graphics Libaray (MMGL) is a library for displaying computer graphics. The library is able to render a variety of graphics objects including spheres, triangles, and more complex triangle meshes. The library is designed to be lightweight and easy-to-use, providing highly abstracted interfaces for beginners. It also employs parallel processing so that the rendering is highly efficient. The code is implemented with 100% portable C++11, so this cross-platform library works flawlessly on a variety of systems. Applications of this library include computer graphics, animation, and education for novice graphics programmers.
 
 The library is comprised of a ray tracer, a multithreading framework, and many other supporting components. The ray tracer acts as the rendering engine, and the multithreading framework accelerates the rendering process using multicore processors. The library is written from scratch, without any dependencies on other libraries. The render results can be output as a picture file in bmp format, or be passed to calling applications using a provided handle.
 
-The project is a course project for the *COMS W4995 Language Libary Design in C++* class in Spring 2016.
+This library is a course project for the *COMS W4995 Language Libary Design in C++* class in Spring 2016.
 
 ## Installation
 

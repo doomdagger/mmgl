@@ -14,10 +14,26 @@
 
 namespace mmgl {
 
+/**
+ * SceneConfig configures the scene parameters. All parameters except for the camera configs are in this class.
+ */
 class SceneConfig {
 public:
     // friend class Scene;
 
+    /**
+     * Constructor using default SceneConfig parameters.
+     * Parameters have obvious meanings as their names indicate.
+     *
+     * @param _render_flag Render options, use BVM or other algorihtms.
+     * @param _bvh_mode BVH options.
+     * @param _pixel_sampling_num Pixel sampling number.
+     * @param _shadow_sampling_num Shadow sampling number.
+     * @param _recursive_limit Recursive limit used in ray tracing.
+     * @param _thread_num Number of threads used in the thread_pool.
+     * @param _partition_num Number of logical partitions used.
+     * @param _parallel_method Which parallel method to use.
+     */
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},
                     _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000},

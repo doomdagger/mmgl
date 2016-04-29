@@ -1,7 +1,6 @@
-//
-// Final Project for COMS 4998: C++ Library Design
-// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
-//
+/**
+ * Header for the Camera class.
+ */
 
 #ifndef RAYTRACER_CAMERA_H
 #define RAYTRACER_CAMERA_H
@@ -38,8 +37,22 @@
 
 namespace mmgl {
 
+/**
+ * Camera class.
+ *
+ * The Camera class defines the viewpoint, image sizes, and so on. It is used in a scene object for rendering the objects in that scene.
+ */
 class Camera {
 public:
+
+    /**
+     * Constructer that sets all camera configurations.
+     *
+     * The camera uses default parameters where most values are set to 0.
+     *
+     * @param eye Position of the camera or the viewpoint.
+     * @param
+     */
     Camera(const Point &eye = Point(), float d = 0,
            const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
            int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);

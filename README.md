@@ -1,92 +1,55 @@
-# raytracer
-high-efficient ray tracer written in c++
+# MMGL: Minimal Multithreaded Graphics Library
 
-### How to build it
+Minimal Multithreaded Graphics Libaray (MMGL) is a library for displaying computer graphics. The library is able to render a variety of graphics objects including spheres, triangles, and more complex triangle meshes. The library is designed to be lightweight and easy-to-use, providing highly abstracted interfaces for beginners. It also employs parallel processing so that the rendering is highly efficient. The code is implemented with 100% portable C++11, so this cross-platform library works flawlessly on a variety of systems. Applications of this library include computer graphics, animation, and education for novice graphics programmers.
 
-Please following the commands below:
-```bash
-# this is a comment
+The library is comprised of a ray tracer, a multithreading framework, and many other supporting components. The ray tracer acts as the rendering engine, and the multithreading framework accelerates the rendering process using multicore processors. The library is written from scratch, without any dependencies on other libraries. The render results can be output as a picture file in bmp format, or be passed to calling applications using a provided handle.
 
-# clone our project
-$ git clone https://github.com/doomdagger/raytracer.git
+The project is a course project for the *COMS W4995 Language Libary Design in C++* class in Spring 2016.
 
-# change directory to root folder of our project
-$ cd raytracer
+## Installation
 
-# create a folder named build
-$ mkdir build
+The library sources can be cloned from <https://github.com/doomdagger/raytracer.git> using git. After downloading the source files, the library can be built and installed by simply running the `INSTALL.sh` script (on *nix systems). Similar commands can be run on other systems to compile and intall the library. The installation process uses tools such as cmake and make.
 
-# change directory to build folder
-$ cd build
+## Library Usage
 
-# execute cmake, attention: two points here
-$ cmake ..
+The library can used easily by including the `mmgl` header and using the `mmgl` namespace. The following example code shows how the library can be integrated in another application:
 
-# execute make
-$ make
-
-# install project, default installation path is /usr/local/include and /usr/local/lib
-$ sudo make install
-```
-
-### How to use it
-
-Create a project with a `CMakeLists.txt` file containing the following content:
-```cmake
-cmake_minimum_required(VERSION 2.6)
-project(prog_out)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-include_directories("/usr/local/include/mmgl")
-
-set(SOURCE_FILES main.cpp)
-add_executable(prog_out ${SOURCE_FILES})
-target_link_libraries(prog_out /usr/local/lib/libmmgl.so pthread)
-```
-
-The content of `main.cpp`:
 ```c++
-#include <iostream>
+#include <cmath>
+#include <string>
+
 #include "mmgl/mmgl.h"
 
-using namespace std;
 using namespace mmgl;
 
-int main() {
+int main(int argc, char* argv[]) {
+    constexpr double PI {3.14159265};
+
     Scene scene;
+    if (argc == 2) {
+    	scene.config().thread_num(std::stoi(argv[1]));
+    }
+    scene.config().pixel_sampling_num(2)
+                  .render_flag(Render::BVH);
 
-    scene.config.pixel_sampling_num(2);
-    scene.config.render_flag(Render::BVH);
+    scene.camera().at(0, 0, 0)
+                  .facing(0, 0, 1)
+                  .focal_length(50)
+                  .view_range(50, 50)
+                  .image_size(1000, 1000);
 
-    Sphere &sphere = scene.sphere().at(0, 13.67f, -62.57f).radius(10);
+    scene.pointLight().at(0, 0, -50).in(1, 1, 0);
+    scene.ambientLight().in(0.05, 0.05, 0.05);
 
-    scene.pointLight(-80, 120, -46.6f, 1, 1, 1);
-    scene.ambientLight(0.05, 0.05, 0.05);
-
-    scene.configCamera(24.2, 29.3, 53.6, 0, 0, -1, 35, 35, 35, 1000, 1000);
-
-    scene.render();
-
-    scene.save("/home/lihe/Desktop/test.bmp");
-
-    sphere.at(20, 13.67f, -62.57f);
-
-    scene.render();
-
-    scene.save("/home/lihe/Desktop/test1.bmp");
-
-//    Scene scene("/home/lihe/Desktop/parser/teapot.txt");
-//
-//    scene.config.shadow_sampling_num(1);
-//    scene.config.pixel_sampling_num(1);
-//    scene.config.recursive_limit(2);
-//    scene.config.render_flag(Render::BVH);
-//
-//    scene.render();
-//
-//    scene.save("/home/lihe/Desktop/test.bmp");
+    auto& sphere = scene.sphere().radius(3);
+    for (int i = 0; i < 8; ++i) {
+        sphere.at(20 * std::sin(i*PI/4), 20 * std::cos(i*PI/4), 50);
+        scene.render();
+        scene.save(std::string("sphere") + std::to_string(i) + ".bmp");
+    }
 
     return 0;
 }
 ```
+
+To compile this program, just compile with the C++11 flag and ink with the MMGL library installed: `g++ -std=c++11 -O3 main.c -lmmgl -pthread`. Run the program and you'll see amazing graphics!

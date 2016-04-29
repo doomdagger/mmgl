@@ -1,6 +1,9 @@
-//
-// Created by lihe on 4/26/16.
-//
+/**
+ * The MMGL header.
+ *
+ * Users of the MMGL library should include this header to obtain rendering functionality.
+ */
+
 
 #ifndef MMGL_MMGL_H
 #define MMGL_MMGL_H

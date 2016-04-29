@@ -17,14 +17,23 @@
 #include "mmgl/util/scene_config.h"
 #include "mmgl/surface/bvh_node.h"
 #include "mmgl/surface/sphere.h"
+#include "mmgl/light/pointlight.h"
+#include "mmgl/light/ambientlight.h"
+#include "mmgl/light/arealight.h"
 
 namespace mmgl {
 
 class Scene {
 public:
-    Scene() : _surfaces{}, _lights{}, _camera{}, config{} { }
+    Scene() : _surfaces{}, _lights{}, _camera{}, _config{} {
+        configCamera(10, 10, 10, -1, -1, -1, 100, 100, 100, 1000, 1000);
+    }
 
     Scene(const std::string &scene_file);
+
+    inline SceneConfig &config() {
+        return _config;
+    }
 
     inline Camera &camera() {
         return _camera;
@@ -56,13 +65,12 @@ public:
 
     ~Scene();
 
-    // public member field config for easy access
-    SceneConfig config;
 private:
     std::vector<Surface *> _surfaces;
     std::vector<Light *> _lights;
-
     Camera _camera;
+    SceneConfig _config;
+
 };  // class Scene
 
 }   // namespace mmgl

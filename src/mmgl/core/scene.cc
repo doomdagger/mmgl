@@ -222,8 +222,7 @@ Scene::Scene(const std::string &scene_file) {
 
 void Scene::render() {
     if (_surfaces.empty()) {
-        std::cerr << "Please at least pass in one surface to render, or do you really want a fully-dark image?" <<
-        std::endl;
+        std::cerr << "Please at least pass in one surface to render, or do you really want a fully-dark image?" << std::endl;
         return;
     }
 
@@ -233,31 +232,24 @@ void Scene::render() {
     std::copy(_surfaces.begin(), _surfaces.end(), std::back_inserter(objects_vec));
     std::copy(_lights.begin(), _lights.end(), std::back_inserter(lights_vec));
 
-    using namespace std::chrono;
-
     // build bvh tree
     BVHNode *parent = nullptr;
-    if (config._render_flag == Render::BVH || config._render_flag == Render::BVH_BBOX_ONLY) {
-        std::cout << "Start to build BVH Tree..." << std::endl;
-        auto func_start = high_resolution_clock::now();
-
+    if (_config.render_flag() == Render::BVH || _config.render_flag() == Render::BVH_BBOX_ONLY) {
         // in case of we only have one object
         if (!(parent = dynamic_cast<BVHNode *>(
-                BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end(), config._bvh_mode)))) {
+                BVHNode::create_bvh_tree(objects_vec.begin(), objects_vec.end(), _config.bvh_mode())))) {
             parent = new BVHNode(objects_vec.begin(), objects_vec.end());
             parent->_left = objects_vec[0];
         }
-
-        auto func_end = high_resolution_clock::now();
-        std::cout << "Finish building BVH Tree in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
     }
 
     // render
-    std::cout << "Start to render..." << std::endl;
+    std::cerr << "Start to render..." << std::endl;
+    using namespace std::chrono;
     auto func_start = high_resolution_clock::now();
-    _camera.render(objects_vec, lights_vec, parent, config);
+    _camera.render(objects_vec, lights_vec, parent, _config);
     auto func_end = high_resolution_clock::now();
-    std::cout << "Finish rendering in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
+    std::cerr << "Finish rendering in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
 
     // clean up memory, using BFS
     if (parent) {

@@ -40,7 +40,9 @@ namespace mmgl {
 
 class Camera {
 public:
-    friend class Scene;
+    Camera(const Point &eye = Point(), float d = 0,
+           const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
+           int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);
 
     void config(float x, float y, float z, float d, float dx, float dy, float dz,
                 int nx, int ny, float iw, float ih);
@@ -73,10 +75,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
 
 private:
-    Camera(const Point &eye = Point(), float d = 0,
-           const Vector &u = Vector(), const Vector &v = Vector(), const Vector &w = Vector(),
-           int nx = 0, int ny = 0, float l = 0, float r = 0, float t = 0, float b = 0);
-
     void render_partition(const size_t partition_id, const size_t partition_size,
                           const std::vector<Surface *> &objects, const std::vector<Light *> &lights,
                           const BVHNode *const parent, const SceneConfig &sceneConfig);

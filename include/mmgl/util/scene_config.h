@@ -16,7 +16,7 @@ namespace mmgl {
 
 class SceneConfig {
 public:
-    friend class Scene;
+    // friend class Scene;
 
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},

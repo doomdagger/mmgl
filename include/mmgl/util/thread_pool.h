@@ -10,7 +10,12 @@
 #include <queue>
 #include <thread>
 
-// function wrapper
+namespace mmgl {
+
+/**
+ * This is a function wrapper that can handle move-only types.
+ * Since std::packaged_task<> instances are not copyable, just movable, std::function<> cannot be used for the queue entries
+ */
 class function_wrapper {
         struct impl_base {
                 virtual void call() = 0;
@@ -38,7 +43,8 @@ public:
         function_wrapper& operator=(const function_wrapper&) = delete;
 };
 
-// thread safe queue
+/**
+ * Thread safe queue based on locks.
 template<typename T>
 class thread_safe_queue {
         mutable std::mutex mut;
@@ -146,5 +152,7 @@ public:
                 return res;
         }
 };
+
+}
 
 #endif // RAYTRACER_THREAD_POOL_H

@@ -38,7 +38,7 @@ public:
     }
 
     /**
-     * Construct a scene from a file.
+     * Construct a scene from a file. This parses a text file describing all the objects used in a scene.
      * @param scene_file Name of the file containing scene objects and lights.
      */
     Scene(const std::string &scene_file);

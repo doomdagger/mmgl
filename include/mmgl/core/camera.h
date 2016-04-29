@@ -51,9 +51,13 @@ public:
 
     Camera &at(float x, float y, float z);
 
+    Camera &at(const Point &point);
+
     Camera &focal_length(float d);
 
     Camera &facing(float dx, float dy, float dz);
+
+    Camera &facing(const Vector &dir);
 
     Camera &view_range(float iw, float ih);
 
@@ -64,9 +68,17 @@ public:
 
     void writeRgba(const std::string &) const;
 
-    int width() const;
+    inline int width() const {
+        return _nx;
+    }
 
-    int height() const;
+    inline int height() const {
+        return _ny;
+    }
+
+    inline const Point &eye() const {
+        return _eye;
+    }
 
     inline const Image &image() const {
         return _image;

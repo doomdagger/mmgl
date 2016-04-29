@@ -279,14 +279,6 @@ Vector Camera::render_pixel(int x, int y, const std::vector<Surface *> &objects,
     return std::move(rgb);
 }
 
-int Camera::width() const {
-    return _nx;
-}
-
-int Camera::height() const {
-    return _ny;
-}
-
 void Camera::writeRgba(const std::string &fileName) const {
     _image.save(fileName);
 }
@@ -326,6 +318,23 @@ Camera &Camera::image_size(int nx, int ny) {
     _ny = ny;
 
     _image.resize(nx, ny);
+    return *this;
+}
+
+Camera &Camera::at(const Point &point) {
+    _eye.x(point.x()), _eye.y(point.y()), _eye.z(point.z());
+    return *this;
+}
+
+Camera &Camera::facing(const Vector &d_dir) {
+    _u = d_dir.cross(Vector{0, 1, 0});
+    _v = _u.cross(d_dir);
+    _w = d_dir * -1;
+
+    _u.normalize();
+    _v.normalize();
+    _w.normalize();
+
     return *this;
 }
 

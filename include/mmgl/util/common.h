@@ -13,7 +13,11 @@
 #include <fstream>
 #include <sstream>
 
+#include "mmgl/util/vector.h"
+
 namespace mmgl {
+
+using RenderResult = std::vector<std::vector<Vector>>;
 
 enum class Render {
     NORMAL = 0,

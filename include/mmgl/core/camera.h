@@ -72,6 +72,10 @@ public:
         return _image;
     }
 
+    inline const RenderResult& handle() const {
+        return _image.handle();
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Camera &camera);
 
 private:

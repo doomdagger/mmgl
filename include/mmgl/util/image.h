@@ -12,6 +12,7 @@
 #include <vector>
 #include <cstring>
 
+#include "mmgl/util/common.h"
 #include "mmgl/util/vector.h"
 
 namespace mmgl {
@@ -28,6 +29,10 @@ public:
 
     inline int height() const {
         return _height;
+    }
+
+    inline const RenderResult& handle() const {
+        return _image;
     }
 
     void resize(int width, int height);

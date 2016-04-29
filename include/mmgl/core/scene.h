@@ -39,12 +39,16 @@ public:
         return _camera;
     }
 
-    void configCamera(float x, float y, float z, float dx, float dy, float dz, float d,
-                      float iw, float ih, int nx, int ny);
+    inline const RenderResult& handle() const {
+        return _camera.handle();
+    }
 
     void render();
 
     void save(const std::string &file_path) const;
+
+    void configCamera(float x, float y, float z, float dx, float dy, float dz, float d,
+                      float iw, float ih, int nx, int ny);
 
     Sphere &sphere(float x = .0f, float y = .0f, float z = .0f, float radius = 1.0f,
                    const Material &material = Material{});

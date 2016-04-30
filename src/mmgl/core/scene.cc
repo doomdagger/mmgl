@@ -200,8 +200,7 @@ Scene::Scene(const std::string &scene_file) {
 
 void Scene::render() {
     if (_surfaces.empty()) {
-        std::cerr << "Please at least pass in one surface to render, or do you really want a fully-dark image?" << std::endl;
-        return;
+        throw RenderException("Please at least have one surface to render, or do you really want a fully-dark image?");
     }
 
     std::vector<Surface *> objects_vec;
@@ -222,12 +221,14 @@ void Scene::render() {
     }
 
     // render
-    std::cerr << "Start to render..." << std::endl;
     using namespace std::chrono;
     auto func_start = high_resolution_clock::now();
     _camera.render(objects_vec, lights_vec, parent, _config);
     auto func_end = high_resolution_clock::now();
-    std::cerr << "Finish rendering in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
+
+    if (_config.logging()) {
+        std::cout << "Finish rendering in " << duration_cast<milliseconds>(func_end - func_start).count() << " ms" << std::endl;
+    }
 
     // clean up memory, using BFS
     if (parent) {

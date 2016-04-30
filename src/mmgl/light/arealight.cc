@@ -11,8 +11,7 @@ std::vector<Point> AreaLight::sample(int sampling_num, const std::function<float
     std::vector<Point> samples;
 
     if (sampling_num < 1) {
-        std::cerr << "Sampling Number in Area Light is less than 1! Automatically make it 1 then" << std::endl;
-        sampling_num = 1;
+        throw RenderException("Sampling number for area light is less than 1!");
     }
 
     float half_len = _len * 0.5f;

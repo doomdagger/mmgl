@@ -20,8 +20,7 @@ float get_token_as_float(std::string inString, int whichToken) {
     float thisFloatVal;    // the return value
 
     if (whichToken == 0) {
-        std::cerr << "error: the first token on a line is a character!" << std::endl;
-        exit(-1);
+        throw FileException("The first token on a line should be a character!");
     }
 
     // c++ string class has no super-easy way to tokenize, let's use c's:
@@ -31,15 +30,13 @@ float get_token_as_float(std::string inString, int whichToken) {
 
     char *p = strtok(cstr, " ");
     if (p == 0) {
-        std::cerr << "error: the line has nothing on it!" << std::endl;
-        exit(-1);
+        throw FileException("The line has nothing on it!");
     }
 
     for (int i = 0; i < whichToken; i++) {
         p = strtok(0, " ");
         if (p == 0) {
-            std::cerr << "error: the line is not long enough for your token request!" << std::endl;
-            exit(-1);
+            throw FileException("The line is not long enough for your token request!");
         }
     }
 
@@ -59,8 +56,7 @@ void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector
     std::ifstream in(file.c_str());
 
     if (!in.good()) {
-        std::cout << "Fails at reading file " << file << std::endl;
-        return;
+        throw FileException("Fails at reading file: " + file);
     }
 
     char buffer[1025];
@@ -106,7 +102,7 @@ void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector
             tris.push_back(k - 1);
         }
         else {
-            std::cerr << "Parser error: invalid command at line " << line << std::endl;
+            throw FileException("Invalid command at line: " + line);
         }
 
     }

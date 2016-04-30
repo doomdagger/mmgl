@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include "mmgl/util/vector.h"
+#include "mmgl/util/exception.h"
 
 namespace mmgl {
 

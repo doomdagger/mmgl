@@ -37,7 +37,7 @@ public:
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},
                     _thread_num{std::thread::hardware_concurrency()}, _partition_num{1000},
-                    _parallel_method{ParallelMethod::THREAD_POOL} { }
+                    _parallel_method{ParallelMethod::THREAD_POOL}, _logging{true} { }
 
     unsigned thread_num() const {
         return _thread_num;
@@ -114,6 +114,14 @@ public:
         return *this;
     }
 
+    bool logging() const {
+        return _logging;
+    }
+
+    void logging(bool logging) {
+        _logging = logging;
+    }
+
 private:
     Render _render_flag;
     BVH _bvh_mode;
@@ -123,6 +131,7 @@ private:
     unsigned _thread_num;
     unsigned _partition_num;
     ParallelMethod _parallel_method;
+    bool _logging;
 };
 
 }

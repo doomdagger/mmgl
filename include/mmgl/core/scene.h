@@ -10,16 +10,9 @@
 #include <queue>
 #include <chrono>
 
-#include "mmgl/util/common.h"
-#include "mmgl/surface/surface.h"
-#include "mmgl/light/light.h"
 #include "mmgl/core/camera.h"
-#include "mmgl/util/scene_config.h"
-#include "mmgl/surface/bvh_node.h"
 #include "mmgl/surface/sphere.h"
-#include "mmgl/light/pointlight.h"
-#include "mmgl/light/ambientlight.h"
-#include "mmgl/light/arealight.h"
+#include "mmgl/surface/triangle.h"
 
 namespace mmgl {
 

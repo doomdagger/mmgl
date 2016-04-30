@@ -11,7 +11,6 @@
 #include <sstream>
 
 #include "mmgl/surface/surface.h"
-#include "mmgl/util/point.h"
 
 namespace mmgl {
 

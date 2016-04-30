@@ -5,9 +5,6 @@
 
 #include "mmgl/core/camera.h"
 
-#include "mmgl/util/common.h"
-
-
 namespace mmgl {
 
 Ray Camera::project_pixel(float i, float j) {

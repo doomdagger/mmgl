@@ -1,5 +1,9 @@
 //
-// Created by lihe on 4/26/16.
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
+// Code Credit to deusmacabre (http://stackoverflow.com/users/318726/deusmacabre):
+// A post from stackoverflow about how to write bmp image in pure c/c++, see the link below
+// http://stackoverflow.com/questions/2654480/writing-bmp-image-in-pure-c-c-without-other-libraries
 //
 
 #include "mmgl/util/image.h"
@@ -57,7 +61,7 @@ void Image::save(const std::string &file_path) const {
     float r, g, b;
 
     img = new unsigned char[3 * _width * _height];
-    std::memset(img, 0, sizeof(img));
+    std::memset(img, 0, sizeof(unsigned char) * 3 * _width * _height);
 
     for (int i = 0; i < _width; i++) {
         for (int j = 0; j < _height; j++) {

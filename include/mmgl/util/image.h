@@ -13,7 +13,6 @@
 #include <cstring>
 
 #include "mmgl/util/common.h"
-#include "mmgl/util/vector.h"
 
 namespace mmgl {
 

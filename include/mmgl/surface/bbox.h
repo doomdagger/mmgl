@@ -9,8 +9,6 @@
 #include <map>
 #include <limits>
 
-#include "mmgl/util/vector.h"
-#include "mmgl/util/point.h"
 #include "mmgl/surface/ray.h"
 
 #define TOLERANCE 0.001f

@@ -6,7 +6,6 @@
 #ifndef RAYTRACER_INTERSECTION_H
 #define RAYTRACER_INTERSECTION_H
 
-#include "mmgl/util/point.h"
 #include "mmgl/util/vector.h"
 
 namespace mmgl {

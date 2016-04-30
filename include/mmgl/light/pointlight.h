@@ -8,7 +8,6 @@
 
 
 #include "mmgl/light/light.h"
-#include "mmgl/util/point.h"
 
 namespace mmgl {
 

@@ -21,17 +21,10 @@
 #include <future>
 #include <functional>
 
-#include "mmgl/util/point.h"
-#include "mmgl/util/vector.h"
-#include "mmgl/surface/ray.h"
-#include "mmgl/surface/surface.h"
-#include "mmgl/light/light.h"
 #include "mmgl/light/pointlight.h"
 #include "mmgl/light/ambientlight.h"
-#include "mmgl/surface/triangle.h"
-#include "mmgl/util/common.h"
-#include "mmgl/surface/bvh_node.h"
 #include "mmgl/light/arealight.h"
+#include "mmgl/surface/bvh_node.h"
 #include "mmgl/util/scene_config.h"
 #include "mmgl/util/image.h"
 #include "mmgl/util/thread_pool.h"

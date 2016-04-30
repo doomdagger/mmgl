@@ -1,7 +1,12 @@
+//
+// Final Project for COMS 4998: C++ Library Design
+// Author: He Li(hl2918), Haoxiang Xu(hx2185), Wangda Zhang(zwd)
+// Credit to the book "C++ Concurrency in Action"
+//
+
 #ifndef RAYTRACER_THREAD_POOL_H
 #define RAYTRACER_THREAD_POOL_H
 
-// Based on the book "C++ Concurrency in Action"
 
 #include <atomic>
 #include <condition_variable>

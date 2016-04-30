@@ -6,12 +6,9 @@
 #ifndef RAYTRACER_RAY_H
 #define RAYTRACER_RAY_H
 
-#include "mmgl/util/point.h"
-#include "mmgl/util/vector.h"
-#include "mmgl/surface/intersection.h"
-
 #include <iostream>
-#include <vector>
+
+#include "mmgl/surface/intersection.h"
 
 #define EPS 0.00005f
 

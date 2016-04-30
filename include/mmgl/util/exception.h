@@ -11,17 +11,25 @@
 
 namespace mmgl {
 
+/**
+ * The MMGLException class handles all errors.
+ * Derived from std::exception.
+ */
 class MMGLException: public std::exception {
 private:
     std::string _M_msg;
 
 public:
-    /** Takes a character string describing the error.  */
+    /**
+     * Takes a character string describing the error.
+     */
     explicit
     MMGLException(const std::string& arg): _M_msg{arg} {}
 
-    /** Returns a C-style character string describing the general cause of
-     *  the current error (the same string passed to the ctor).  */
+    /**
+     * Returns a C-style character string describing the general cause of
+     * the current error (the same string passed to the ctor).
+     */
     virtual const char* what() const throw()
     {
         return _M_msg.c_str();
@@ -30,14 +38,18 @@ public:
 
 class FileException : public MMGLException {
 public:
-    /** Takes a character string describing the error.  */
+    /**
+     * Takes a character string describing the error. 
+     */
     explicit
     FileException(const std::string& arg): MMGLException{arg} {}
 };
 
 class RenderException : public MMGLException {
 public:
-    /** Takes a character string describing the error.  */
+    /**
+     * Takes a character string describing the error.
+     */
     explicit
     RenderException(const std::string& arg): MMGLException{arg} {}
 };

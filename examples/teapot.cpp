@@ -10,8 +10,7 @@ int main(int argc, char *argv[]) {
     if (argc == 2) {
     	scene.config().thread_num(std::stoi(argv[1]));
     }
-    scene.config().shadow_sampling_num(1)
-                  .pixel_sampling_num(1)
+    scene.config().pixel_sampling_num(1)
                   .recursive_limit(2)
                   .render_flag(Render::BVH);
 

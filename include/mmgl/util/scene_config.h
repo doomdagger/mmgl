@@ -27,12 +27,13 @@ public:
      *
      * @param _render_flag Render options, use BVM or other algorihtms.
      * @param _bvh_mode BVH options.
-     * @param _pixel_sampling_num Pixel sampling number.
-     * @param _shadow_sampling_num Shadow sampling number.
-     * @param _recursive_limit Recursive limit used in ray tracing.
+     * @param _pixel_sampling_num Pixel sampling number. Larger number gives better effect.
+     * @param _shadow_sampling_num Shadow sampling number. Larger number gives better effect.
+     * @param _recursive_limit Recursive limit used in ray tracing. Larger number gives better effect.
      * @param _thread_num Number of threads used in the thread_pool.
      * @param _partition_num Number of logical partitions used.
      * @param _parallel_method Which parallel method to use.
+     * @param _logging Enable logging or not.
      */
     SceneConfig() : _render_flag{Render::BVH}, _bvh_mode{BVH::VOLUME_CUT},
                     _pixel_sampling_num{2}, _shadow_sampling_num{2}, _recursive_limit{5},

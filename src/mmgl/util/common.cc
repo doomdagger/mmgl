@@ -102,7 +102,7 @@ void parse_obj_file(const std::string &file, std::vector<int> &tris, std::vector
             tris.push_back(k - 1);
         }
         else {
-            throw FileException("Invalid command at line: " + line);
+            throw FileException("Invalid command at line: " + std::to_string(line));
         }
 
     }
